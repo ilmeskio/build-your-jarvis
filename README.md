@@ -31,14 +31,15 @@ Questo repository serve come **base minima** per:
 
 ---
 
-## 🚀 Prossimi passi
+## 🛠️ Avvio rapido in Codespaces
 
-1. Preparare un `Dockerfile` o un comando `docker run` per eseguire l’immagine ufficiale di n8n (`n8nio/n8n:latest`).  
-2. Definire le variabili d’ambiente che collegano l’istanza n8n all’URL del Codespace.  
-3. Esporre la porta `5678` e impostarla come **Public** nel pannello **Ports**.  
-4. Verificare che l’interfaccia web di n8n sia accessibile dall’URL generato.  
+1. Apri il Codespace e assicurati che Docker sia attivo (automatica nei Codespaces Linux).  
+2. (Opzionale) Copia `config/.env.example` in `config/.env` per forzare porta, nome container, immagine (`docker.n8n.io/n8nio/n8n:latest` di default) o timezone (`N8N_TIMEZONE`).  
+3. Esegui `./scripts/bootstrap.sh`: lo script esegue `docker pull`, assicura la presenza del volume `n8n_data` (montato su `/home/node/.n8n`), e lancia il container con le variabili `N8N_HOST/N8N_PORT` calcolate per il Codespace e con `GENERIC_TIMEZONE/TZ` allineate alla tua preferenza.  
+4. Una volta attivo, verifica la reachability con `./scripts/healthcheck.sh https://<codespace-url>/`. Il comando effettua tentativi multipli e fallisce in modo rumoroso se la porta 5678 non risponde.  
+5. Condividi l’URL pubblico generato da Codespaces (porta 5678) per accedere all’interfaccia web n8n.  
 
----
+----
 
 ## 🧩 Suggerimenti di espansione (facoltativi)
 
