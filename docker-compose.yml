@@ -9,7 +9,8 @@ services:
     ports:
       - "5678:5678"
     volumes:
-      - n8n_data:/home/node/.n8n
+      # We persist workflows and credentials inside ./data so workshop attendees can inspect or reset the state easily.
+      - ./data:/home/node/.n8n
     environment:
       # We hardcode the local host because workshops run everything on the attendee laptop.
       N8N_HOST: localhost
@@ -21,6 +22,3 @@ services:
       TZ: UTC
       N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS: "true"
       N8N_RUNNERS_ENABLED: "true"
-
-volumes:
-  n8n_data: {}
