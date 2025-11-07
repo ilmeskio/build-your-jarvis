@@ -40,8 +40,8 @@ if ! command -v docker >/dev/null 2>&1; then
   exit 1
 fi
 
-log "Pulling image ${IMAGE} so we track upstream security patches automatically."
-docker pull "$IMAGE" >/dev/null
+log "Pulling image ${IMAGE} so we track upstream security patches automatically (Docker shows progress below)."
+docker pull "$IMAGE"
 
 # We provision the persistent volume once so workflow data survives container restarts within the Codespace.
 if ! docker volume ls --format '{{.Name}}' | grep -q "^${DATA_VOLUME}$"; then
