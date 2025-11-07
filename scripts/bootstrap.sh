@@ -72,3 +72,4 @@ docker run -d \
   "$IMAGE"
 
 log "n8n is launching. Use scripts/healthcheck.sh to confirm the UI is reachable."
+log "Visit https://${HOSTNAME} to open the n8n UI from this Codespace."
