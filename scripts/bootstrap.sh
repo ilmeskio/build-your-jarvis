@@ -20,10 +20,9 @@ DATA_VOLUME="${N8N_DATA_VOLUME:-n8n_data}"
 TIMEZONE="${N8N_TIMEZONE:-UTC}"
 ENFORCE_PERMS="${N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS:-true}"
 RUNNERS_ENABLED="${N8N_RUNNERS_ENABLED:-true}"
-# We align the public editor URL and allowed origins with the Codespace hostname so push connections honor the tightened origin checks introduced in n8n 1.87.
+# We align the public editor URL with the Codespace hostname so push connections honor the tightened origin checks introduced in n8n 1.87.
 PROTOCOL="${N8N_PROTOCOL:-https}"
 EDITOR_URL="${N8N_EDITOR_BASE_URL:-${PROTOCOL}://${HOSTNAME}}"
-ALLOW_CONNECTIONS_FROM="${N8N_ALLOW_CONNECTIONS_FROM:-$EDITOR_URL}"
 WEBHOOK_BASE="${WEBHOOK_URL:-${PROTOCOL}://${HOSTNAME}/}"
 
 # We infer the public hostname inside Codespaces when teammates have not provided one explicitly.
@@ -70,7 +69,6 @@ docker run -d \
   -e N8N_PORT="5678" \
   -e N8N_PROTOCOL="$PROTOCOL" \
   -e N8N_EDITOR_BASE_URL="$EDITOR_URL" \
-  -e N8N_ALLOW_CONNECTIONS_FROM="$ALLOW_CONNECTIONS_FROM" \
   -e GENERIC_TIMEZONE="$TIMEZONE" \
   -e TZ="$TIMEZONE" \
   -e N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS="$ENFORCE_PERMS" \
