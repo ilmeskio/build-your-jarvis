@@ -20,10 +20,8 @@ DATA_VOLUME="${N8N_DATA_VOLUME:-n8n_data}"
 TIMEZONE="${N8N_TIMEZONE:-UTC}"
 ENFORCE_PERMS="${N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS:-true}"
 RUNNERS_ENABLED="${N8N_RUNNERS_ENABLED:-true}"
-# We align the public editor URL with the Codespace hostname so push connections honor the tightened origin checks introduced in n8n 1.87.
-PROTOCOL="${N8N_PROTOCOL:-https}"
-EDITOR_URL="${N8N_EDITOR_BASE_URL:-${PROTOCOL}://${HOSTNAME}}"
-WEBHOOK_BASE="${WEBHOOK_URL:-${PROTOCOL}://${HOSTNAME}/}"
+# We acknowledge that GitHub Codespaces sits in front of our container, so we trust exactly one proxy hop when n8n evaluates headers like X-Forwarded-For and Origin.
+PROXY_HOPS="${N8N_PROXY_HOPS:-1}"
 
 # We infer the public hostname inside Codespaces when teammates have not provided one explicitly.
 if [[ -n "${N8N_HOST:-}" ]]; then
@@ -33,6 +31,11 @@ elif [[ -n "${CODESPACE_NAME:-}" && -n "${GITHUB_CODESPACES_PORT_FORWARDING_DOMA
 else
   HOSTNAME="localhost"
 fi
+
+# We align the public editor URL with the Codespace hostname so push connections honor the tightened origin checks introduced in n8n 1.87.
+PROTOCOL="${N8N_PROTOCOL:-https}"
+EDITOR_URL="${N8N_EDITOR_BASE_URL:-${PROTOCOL}://${HOSTNAME}}"
+WEBHOOK_BASE="${WEBHOOK_URL:-${PROTOCOL}://${HOSTNAME}/}"
 
 log() {
   printf '[n8n bootstrap] %s\n' "$1"
@@ -69,6 +72,7 @@ docker run -d \
   -e N8N_PORT="5678" \
   -e N8N_PROTOCOL="$PROTOCOL" \
   -e N8N_EDITOR_BASE_URL="$EDITOR_URL" \
+  -e N8N_PROXY_HOPS="$PROXY_HOPS" \
   -e GENERIC_TIMEZONE="$TIMEZONE" \
   -e TZ="$TIMEZONE" \
   -e N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS="$ENFORCE_PERMS" \
