@@ -1,0 +1,5 @@
+{
+  "name": "n8n-codespace",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "postAttachCommand": "./scripts/bootstrap.sh"
+}
