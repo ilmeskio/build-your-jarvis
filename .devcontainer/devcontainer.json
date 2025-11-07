@@ -1,5 +1,11 @@
 {
   "name": "n8n-codespace",
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
+      "moby": true,
+      "enableNonRootDocker": true
+    }
+  },
   "postAttachCommand": "./scripts/bootstrap.sh"
 }
