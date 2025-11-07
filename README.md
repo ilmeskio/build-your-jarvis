@@ -37,7 +37,7 @@ Questo repository serve come **base minima** per:
 2. (Opzionale) Copia `config/.env.example` in `config/.env` per forzare porta, nome container, immagine (`docker.n8n.io/n8nio/n8n:latest` di default) o timezone (`N8N_TIMEZONE`).  
 3. Esegui `./scripts/bootstrap.sh`: lo script esegue `docker pull`, assicura la presenza del volume `n8n_data` (montato su `/home/node/.n8n`), e lancia il container con le variabili `N8N_HOST/N8N_PORT` calcolate per il Codespace e con `GENERIC_TIMEZONE/TZ` allineate alla tua preferenza.  
 4. Una volta attivo, verifica la reachability con `./scripts/healthcheck.sh https://<codespace-url>/`. Il comando effettua tentativi multipli e fallisce in modo rumoroso se la porta 5678 non risponde.  
-5. Condividi l’URL pubblico generato da Codespaces (porta 5678) per accedere all’interfaccia web n8n.  
+5. Condividi l’URL pubblico generato da Codespaces (porta 5678, auto-forward configurato nel devcontainer) per accedere all’interfaccia web n8n.  
 
 ----
 
