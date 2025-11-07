@@ -1,0 +1,16 @@
+# We route GitHub Codespaces traffic through Caddy so we can normalize Origin headers before n8n evaluates WebSocket requests.
+# This proxy listens on the same forwarded port as n8n (5678 by default) and speaks plain HTTP because GitHub terminates TLS upstream.
+{$N8N_PUBLIC_LISTEN} {
+  # We disable Auto HTTPS because Codespaces already provides certificates at the edge and we only need local HTTP.
+  auto_https off
+
+  # We stream every request to the n8n container and rewrite a few headers so the push server sees stable metadata.
+  reverse_proxy {$N8N_UPSTREAM} {
+    # We preserve the incoming Host header so n8n can build absolute URLs correctly.
+    header_up Host {http.request.header.Host}
+    # We restate the Origin header as <scheme>://<host> to satisfy n8n's tightened checks from v1.87 onward.
+    header_up Origin {scheme}://{http.request.header.Host}
+    # We flag the original protocol for completeness in case future features rely on it.
+    header_up X-Forwarded-Proto {scheme}
+  }
+}
