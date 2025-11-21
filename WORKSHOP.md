@@ -122,6 +122,59 @@ Per permettere la visualizzazione dei comandi nel menu del bot:
 - `/delete <id>`  
 - `/complete <id>` → aggiorna `is_done = true`
 
+## Nodi n8n da creare per la gestione dei TODO (senza AI)
+
+Per implementare i comandi sopra elencati, ogni comando richiede una piccola struttura di nodi.
+
+### **1. Nodo Telegram Trigger**
+- Ascolta i messaggi in arrivo.
+- Recupera testo, chat_id e parametri del comando.
+
+### **2. Nodo Function / Switch**
+Serve a distinguere quale comando è stato inviato:
+- `/add`
+- `/list`
+- `/delete`
+- `/complete`
+
+Può essere un nodo:
+- **Switch** → confronto per testo che inizia con `/add`, `/list`, ecc.
+- Oppure un nodo **Function** che smista il flusso.
+
+### **3. Nodi Supabase**
+Per ciascuna operazione CRUD:
+
+#### `/add` → Inserimento TODO
+- Nodo **Supabase Insert**  
+  - Tabella: `todos`  
+  - Campi richiesti:  
+    - `user_id = {{$json["message"]["from"]["id"]}}`  
+    - `text` (estratto dal messaggio)  
+    - `priority`  
+    - `due_date` (se presente)
+
+#### `/list` → Lettura TODO
+- Nodo **Supabase Select**  
+  - Filtri:  
+    - `user_id = chat_id`  
+    - `is_done = false`
+
+#### `/delete` → Eliminazione TODO
+- Nodo **Supabase Delete**  
+  - Filtro: `id = <id passato dal comando>`
+
+#### `/complete` → Aggiornamento TODO
+- Nodo **Supabase Update**  
+  - Set: `is_done = true`  
+  - Filtro: `id = <id passato dal comando>`
+
+### **4. Nodo Telegram Send Message**
+Responsabile della risposta finale:
+- Conferma inserimento
+- Lista dei TODO
+- Conferma eliminazione
+- Conferma completamento
+
 ---
 
 # **Step 3 — Strumenti manuali (senza AI)**
@@ -147,6 +200,65 @@ Imparare a consumare API esterne dentro n8n.
 ```
 GET https://pixabay.com/api?key=API_KEY&q=QUERY&image_type=photo&per_page=3
 ```
+
+## Nodi n8n da creare per gli strumenti manuali
+
+### **1. Meteo — OpenWeatherMap**
+
+Per gestire `/meteo <città>`:
+
+- **Telegram Trigger**  
+  Riceve il messaggio con la città.
+
+- **Function / Switch**  
+  Estrarre la parola dopo `/meteo`.
+
+- **Nodo OpenWeatherMap**  
+  - Modalità: Current Weather (o Forecast)
+  - Input: Nome città → `{{$json["city"]}}`
+  - API Key configurata nelle credenziali
+
+- **Set / Function (opzionale)**  
+  Formattazione del testo in output.
+
+- **Telegram Send Message**  
+  Risposta con temperatura, condizioni meteo, ecc.
+
+---
+
+### **2. Immagini — Pixabay**
+
+Per gestire `/image <query>`:
+
+- **Telegram Trigger**  
+  Ottiene la query immagine.
+
+- **Function / Switch**  
+  Estrae ciò che segue `/image`.
+
+- **HTTP Request (GET)**  
+  - URL: `https://pixabay.com/api`  
+  - Query params:  
+    - `key = {{ $env.PIXABAY_API_KEY }}`  
+    - `q = {{ $json["query"] }}`  
+    - `image_type = photo`  
+    - `per_page = 3`
+
+- **Set / Function**  
+  - Seleziona i primi link immagine da `hits[]`
+  - Prepara un output tipo:  
+    ```
+    {
+      "images": ["url1", "url2", "url3"]
+    }
+    ```
+
+- **Telegram Send Message**  
+  Manda i link o le immagini direttamente.
+
+---
+
+Questi nodi preparano correttamente il terreno per lo Step 4, in cui l’AI Agent userà automatismi per scegliere da solo quale strumento invocare.
 
 ---
 
