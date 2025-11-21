@@ -253,8 +253,58 @@ Per gestire `/image <query>`:
     }
     ```
 
-- **Telegram Send Message**  
+-- **Telegram Send Message**  
   Manda i link o le immagini direttamente.
+
+---
+
+### **Inviare immagini direttamente su Telegram (download da Pixabay)**
+
+Per migliorare l’esperienza utente, invece di inviare solo il link dell’immagine, possiamo **scaricare l’immagine** da Pixabay e poi **inviarla direttamente su Telegram** come foto.
+
+## Nodi aggiuntivi da inserire
+
+### **1. Set / Function — Estrarre URL immagine**
+Dopo il nodo HTTP Request (Pixabay), estrarre l’URL della prima immagine:
+
+- Campo: `imageUrl`
+- Valore: `{{$json["hits"][0]["largeImageURL"]}}`
+
+### **2. HTTP Request — Download dell’immagine**
+Scaricare l’immagine in formato binario.
+
+Configurazione:
+- **Method:** GET  
+- **URL:** `{{$json["imageUrl"]}}`  
+- **Response Format:** *File*  
+- **Binary Property:** `data`
+
+Questo crea un file binario chiamato `data`.
+
+### **3. Telegram Send Photo — Invio dell’immagine**
+Inviare l’immagine direttamente alla chat.
+
+Configurazione:
+- **Chat ID:** `{{$json["message"]["chat"]["id"]}}`
+- **Photo:** `data`
+- **Caption (opzionale):** “Ecco un’immagine che ho trovato per te!”
+
+## Flusso completo
+```
+Telegram Trigger  
+   ↓  
+Function / Switch (interpreta /image)  
+   ↓  
+HTTP Request (Pixabay API)  
+   ↓  
+Set (estrai imageUrl)  
+   ↓  
+HTTP Request (download → binary:data)  
+   ↓  
+Telegram Send Photo (photo=data)  
+```
+
+Questo approccio rende il bot più professionale e migliora l’esperienza degli studenti, che vedranno l’immagine direttamente nel bot invece che come semplice link.
 
 ---
 
