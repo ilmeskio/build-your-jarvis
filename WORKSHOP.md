@@ -25,7 +25,33 @@ Il risultato finale sarà un assistente capace di gestire TODO, recuperare infor
 - n8n tramite Docker Compose (file fornito)
 - Editor di testo semplice (VSCode o altro)
 
-### **2. Account & API key necessari**
+### **2. Setup dell’ambiente locale**
+
+Questa sezione ci serve per partire tutti dallo stesso punto, ridurre i problemi di configurazione e avere un ambiente ripetibile che possiamo resettare in caso di errori.
+
+1. **Forka e clona il repository**
+   - Fork su GitHub (così ognuno lavora sul proprio spazio): https://github.com/ilmeskio/build-your-jarvis/fork
+   - Clone in locale.
+
+2. **Verifica che Docker sia attivo**
+   - Apri Docker Desktop (o avvia il demone Docker, se usi Docker Engine).
+   - Facoltativo ma utile: `docker --version` e `docker compose version` per verificare che la CLI risponda.
+
+3. **Avvia n8n con Docker Compose**
+   - Dalla root del progetto esegui: `docker compose up -d`
+   - Se la tua installazione non rileva automaticamente il file, usa: `docker compose -f compose.yml up -d`
+
+4. **Controlla che n8n sia pronto**
+   - Segui i log finché n8n non segnala che l’editor è accessibile: `docker compose logs -f n8n`
+   - Poi apri `http://localhost:5678` e completa l’onboarding (creazione utente admin e salvataggio credenziali).
+
+5. **Ferma o resetta l’ambiente quando serve**
+   - Stop dello stack: `docker compose down` (i dati restano nella cartella `./data`).
+   - Reset totale: elimina `./data` e riavvia lo stack (questo cancella workflow e credenziali, quindi facciamolo solo se vogliamo ripartire da zero).
+
+---
+
+### **3. Account & API key necessari**
 - Account Telegram + app installata
 - Bot Telegram creato tramite **BotFather**  
   → ottenimento del **Bot Token**
@@ -33,10 +59,6 @@ Il risultato finale sarà un assistente capace di gestire TODO, recuperare infor
 - **Account Supabase** + progetto vuoto creato in anticipo  
 - **Pixabay API Key**: https://pixabay.com/api/docs/  
 - **OpenWeatherMap API Key**: https://openweathermap.org/api  
-
-### **3. Materiale fornito dal docente**
-- `docker-compose.yml`
-- eventuali workflow base da importare in n8n
 
 ---
 
