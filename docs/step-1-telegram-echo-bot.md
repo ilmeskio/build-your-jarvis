@@ -60,7 +60,7 @@ Questa parte esiste perché vogliamo che n8n “ascolti” Telegram e crei un’
 4. Attiviamo il workflow di telegram (dato che siamo in configurazione locale non possiamo usare il trigger di test)
 5. Torniamo su Telegram e scriviamo un messaggio al bot (es. `ciao`)
 
-Se tutto è a posto, n8n cattura un evento e noi vediamo i dati dell’input.
+Se tutto è a posto, n8n cattura un evento e fa una esecuzione. Nella tab esecuzioni vediamo tutte le esecuzioni.
 I campi che ci interessano di solito sono:
 
 - `message.text` → il testo del messaggio
