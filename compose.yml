@@ -1,7 +1,7 @@
 services:
   n8n:
     # We run the official n8n image so local workshop machines stay aligned with upstream security patches.
-    image: docker.n8n.io/n8nio/n8n:latest
+    image: docker.n8n.io/n8nio/n8n:1.118.2
     container_name: n8n-workshop
     restart: unless-stopped
     ports:
