@@ -21,7 +21,7 @@ Repository: https://github.com/ilmeskio/build-your-jarvis
 
 ### 🖥️ Slide del workshop (Slidev)
 
-- Sorgente: `WORKSHOP.md`
+- Sorgente: `slides.md`
 - Avvio in locale: `pnpm install` poi `pnpm slides:dev`
 - Build statico (per GitHub Pages): `pnpm slides:build`
 - Format (Prettier + plugin Slidev): `pnpm format:slides`
