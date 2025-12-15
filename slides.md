@@ -100,15 +100,19 @@ Configuriamo un bot Telegram collegato a n8n.
 > 
 >  Un eco.
 
-1. Aprire BotFather su Telegram: [**BotFather**](https://t.me/BotFather)
-2. mandare il messaggio `/newbot`
-3. Assegnare nome del bot e username
-4. Copiare il **Bot Token**
+## Cosa facciamo (in breve)
 
-### **Workflow n8n minimal**
+1. Creiamo un bot con BotFather e copiamo il **Bot Token**
+2. In n8n creiamo un workflow con:
+   - `Telegram Trigger` (evento **On Message**) per ricevere i messaggi
+   - `Telegram Send Message` per rispondere nella stessa chat
+3. Testiamo e poi **Activate** per renderlo sempre attivo
 
-- `Telegram Trigger`
-- `Telegram Send Message` (testo = `{{$json["message"]}}`)
+## Guida estesa nel repo
+
+Per i passaggi dettagliati (trigger, credenziali, expression, troubleshooting) usiamo:
+
+- [docs/step-1-telegram-echo-bot.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/step-1-telegram-echo-bot.md)
 
 ---
 

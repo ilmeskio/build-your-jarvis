@@ -1,5 +1,7 @@
 # README — Build Your Jarvis con n8n in Docker Compose
 
+Repository: https://github.com/ilmeskio/build-your-jarvis
+
 ## 🚀 Come iniziare il workshop Build Your Jarvis
 
 1. **Forka questo repository su GitHub**: il workshop parte sempre da un tuo repo personale così puoi lavorare in uno spazio individuale e tenerlo allineato con gli altri partecipanti.
@@ -24,3 +26,7 @@
 - Build statico (per GitHub Pages): `pnpm slides:build`
 - Format (Prettier + plugin Slidev): `pnpm format:slides`
 - VS Code: estensione Slidev consigliata (apri Extensions e installa “Slidev”).
+
+### 📚 Guide estese (repo)
+
+- Step 1 (Telegram Echo Bot): [docs/step-1-telegram-echo-bot.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/step-1-telegram-echo-bot.md)
