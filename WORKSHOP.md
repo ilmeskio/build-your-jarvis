@@ -82,20 +82,11 @@ Questa sezione ci serve per partire tutti dallo stesso punto, ridurre i problemi
    - Reset totale: elimina `./data` e riavvia lo stack (questo cancella workflow e credenziali, quindi facciamolo solo se vogliamo ripartire da zero).
 
 ---
----
 
 ### **3. Account & API key necessari**
 
-- Account Telegram + app installata
-- Bot Telegram creato tramite [**BotFather**](https://t.me/BotFather)
-  - Apri la chat con BotFather e invia `/newbot`.
-  - Scegli un nome (display) e uno username che termina con `bot` (lo username deve essere **unico** su tutto telegram. Scegliete il nome che volete).
-  - Copia il **Bot Token** e trattalo come una password.
-  - Guida ufficiale: https://core.telegram.org/bots/tutorial#obtain-your-bot-token
-- **Gemini API Key** (gratuita): https://ai.google.dev
-- **Account Supabase** + progetto vuoto creato in anticipo
-- **Pixabay API Key**: https://pixabay.com/api/docs/
-- **OpenWeatherMap API Key**: https://openweathermap.org/api
+- Un account Google (ci servirà per creare la Gemini API key quando arriviamo allo step AI).
+- Un account Telegram con app installata (meglio anche Telegram Desktop, così copiare/incollare è più comodo).
 
 ---
 
@@ -143,6 +134,11 @@ Comprendere il funzionamento dei webhook e verificare il collegamento bot ↔ n8
 ## Descrizione
 
 Creazione della tabella dei TODO su Supabase e gestione manuale tramite comandi Telegram.
+
+## Setup Supabase (quando arriviamo a questo step)
+
+- Crea (o apri) un progetto Supabase da qui: https://database.new
+- Ci serviranno **Project URL** e **anon key** per configurare le credenziali in n8n.
 
 ## Obiettivo dello step
 
@@ -292,6 +288,10 @@ GET https://pixabay.com/api?key=API_KEY&q=QUERY&image_type=photo&per_page=3
 
 Per gestire `/meteo <città>`:
 
+- Crea l’account e genera una API key:
+  - Sign up: https://home.openweathermap.org/users/sign_up
+  - API keys: https://home.openweathermap.org/api_keys
+
 - **Telegram Trigger**  
   Riceve il messaggio con la città.
 
@@ -314,6 +314,8 @@ Per gestire `/meteo <città>`:
 ### **2. Immagini — Pixabay**
 
 Per gestire `/image <query>`:
+
+- Crea l’account e recupera la API key qui (in alto trovi anche la documentazione): https://pixabay.com/api/docs/
 
 - **Telegram Trigger**  
   Ottiene la query immagine.
@@ -409,6 +411,8 @@ Questi nodi preparano correttamente il terreno per lo Step 4, in cui l’AI Agen
 
 Introduce l’AI Agent Gemini di n8n.  
 Jarvis comprende il linguaggio naturale e decide quale tool usare.
+
+Prima di iniziare, creiamo la Gemini API key (la useremo nelle credenziali del nodo): https://aistudio.google.com/api-keys
 
 ## Obiettivo dello step
 
