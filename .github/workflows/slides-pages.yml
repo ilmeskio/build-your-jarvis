@@ -23,13 +23,28 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: pnpm
 
       - name: Enable pnpm
         run: |
           # We enable pnpm via Corepack so every CI run uses a consistent package manager version.
           # This keeps installs reproducible across machines while still being easy for us to upgrade intentionally.
           corepack enable
+          corepack prepare pnpm@10.16.1 --activate
+
+      - name: Resolve pnpm store path
+        id: pnpm-store
+        run: |
+          # We compute the pnpm store path so we can cache it across CI runs.
+          # This speeds up installs while keeping our dependency graph identical thanks to the lockfile.
+          echo "path=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache pnpm store
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-store.outputs.path }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
         run: |
