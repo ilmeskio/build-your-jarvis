@@ -1,0 +1,66 @@
+name: Deploy Slidev slides to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Enable pnpm
+        run: |
+          # We enable pnpm via Corepack so every CI run uses a consistent package manager version.
+          # This keeps installs reproducible across machines while still being easy for us to upgrade intentionally.
+          corepack enable
+
+      - name: Install dependencies
+        run: |
+          # We install Slidev so the build is reproducible in CI.
+          # pnpm uses a content-addressable store, so reruns stay fast for us.
+          pnpm install --frozen-lockfile
+
+      - name: Build slides
+        run: |
+          # We compute the correct base path so the deck works on GitHub Pages.
+          # Project pages are served from "/<repo>/", while user pages "<user>.github.io" live at "/".
+          REPO_NAME="${GITHUB_REPOSITORY#*/}"
+          if [[ "$REPO_NAME" == *.github.io ]]; then
+            BASE="/"
+          else
+            BASE="/$REPO_NAME/"
+          fi
+
+          pnpm run slides:build -- --base "$BASE"
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

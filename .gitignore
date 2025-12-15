@@ -1,2 +1,7 @@
 # Local n8n state persisted by docker compose
 data
+
+# We keep Node dependencies and Slidev build output out of git so teammates can install/build locally without churn.
+node_modules
+.slidev
+dist

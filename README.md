@@ -16,3 +16,11 @@
 - `docker compose ps` — mostra lo stato del container n8n.
 - `docker compose logs -f n8n` — controlla i log dell’applicazione.
 - `docker compose down` — spegne lo stack e libera la porta quando hai finito.
+
+### 🖥️ Slide del workshop (Slidev)
+
+- Sorgente: `WORKSHOP.md`
+- Avvio in locale: `pnpm install` poi `pnpm slides:dev`
+- Build statico (per GitHub Pages): `pnpm slides:build`
+- Format (Prettier + plugin Slidev): `pnpm format:slides`
+- VS Code: estensione Slidev consigliata (apri Extensions e installa “Slidev”).
