@@ -1,22 +1,29 @@
 services:
   n8n:
     # We run the official n8n image so local workshop machines stay aligned with upstream security patches.
-    image: docker.n8n.io/n8nio/n8n:latest
-    container_name: n8n-workshop
+    image: ${N8N_IMAGE:-docker.n8n.io/n8nio/n8n:2.0.2}
+    env_file:
+      # We load workshop defaults from .env so the repo works with a single “docker compose up -d”.
+      # Compose also uses .env for variable interpolation, but env_file ensures the same values reach the container env too.
+      - .env
     restart: unless-stopped
     ports:
-      - "5678:5678"
+      - "${N8N_PORT:-5678}:5678"
     volumes:
-      # We persist workflows and credentials inside ./data so workshop attendees can inspect or reset the state easily.
+      # We persist workflows and credentials in ./data so teammates can inspect, back up, or reset state easily.
+      # This stays aligned with workshop expectations, but we should treat ./data as sensitive because it can contain credentials.
       - ./data:/home/node/.n8n
     environment:
-      # We hardcode the local host because workshops run everything on the attendee laptop.
-      N8N_HOST: localhost
-      N8N_PORT: "5678"
-      N8N_PROTOCOL: http
-      N8N_EDITOR_BASE_URL: http://localhost:5678
-      GENERIC_TIMEZONE: UTC
-      TZ: UTC
+      # We keep n8n’s base URL settings unset so it can infer them from incoming requests.
+      # This is important when we expose n8n through Cloudflare Tunnel, because the public hostname is assigned at runtime.
+      #
+      # When we need correct public URLs (for example to paste into third-party services), we can set N8N_PUBLIC_URL explicitly.
+      # We default to localhost so the local workshop flow works out of the box.
+      #
+      # Important: N8N_PUBLIC_URL should NOT include a trailing slash, because we append it for WEBHOOK_URL.
+      N8N_EDITOR_BASE_URL: ${N8N_PUBLIC_URL:-http://localhost:5678}
+      WEBHOOK_URL: ${N8N_PUBLIC_URL:-http://localhost:5678}/
+      GENERIC_TIMEZONE: ${N8N_TIMEZONE:-UTC}
+      TZ: ${N8N_TIMEZONE:-UTC}
       N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS: "true"
-      N8N_RUNNERS_ENABLED: "true"
-    command: start --tunnel
+    command: start
