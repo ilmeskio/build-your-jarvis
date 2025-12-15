@@ -30,6 +30,23 @@ Il risultato finale sarà un assistente capace di gestire TODO, recuperare infor
 - Ognuno ha il proprio ritmo: alcune sezioni sono **facoltative** per chi è più veloce.
 - Collaborazione: aiutare un compagno significa imparare due volte.
 - Rispetto delle risorse comuni: API key personali, nessun uso improprio.
+- Usate pure ChatGPT, ma fate attenzione...
+
+---
+
+## Come usare l'AI in maniera furba
+
+Quello che genera ChatGPT spesso non è aggiornato o non completamente funzionante. Rischiate di perdere più tempo a capire come mai è sbagliato senza tirar fuori niente.
+
+  - **Usala come tutor**: chiedi perché una cosa funziona, non solo cosa scrivere.
+  - **Parti dalla doc**: incolla uno snippet delle API n8n e fatti spiegare “cosa fa ogni campo” + casi d’uso.
+  - **Chiedi esperimenti:** “dammi 3 micro-esercizi” (facile/medio/difficile) e una checklist di cosa devo osservare.
+  - **Fai debug guidato**: incolla errore + input/output, fatti proporre ipotesi e prove per confermarle.
+  - **Pretendi ragionamento:** “prima dimmi il piano, poi il codice” e “spiegami le alternative”.
+  - **Verifica e confronta**: chiedi “come lo controlleresti?” e poi esegui tu.
+  - **Tieniti il volante**: fai scrivere all’AI solo la base; le scelte (dati, flusso, naming) le fai tu.
+
+Così vai più veloce imparando cose nuove!
 
 ---
 
