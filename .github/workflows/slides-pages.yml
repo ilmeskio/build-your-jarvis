@@ -63,7 +63,7 @@ jobs:
             BASE="/$REPO_NAME/"
           fi
 
-          pnpm run slides:build -- --base "$BASE"
+          pnpm run slides:build --base "$BASE"
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
