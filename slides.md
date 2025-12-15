@@ -91,36 +91,18 @@ Questa sezione ci serve per partire tutti dallo stesso punto, ridurre i problemi
 
 ---
 
-# **Struttura del Workshop**
-
----
-
 # **Step 1 — Telegram Echo Bot**
 
-## Descrizione
 
-Configurazione iniziale del bot Telegram collegato a n8n.  
-Lo studente invia un messaggio e il bot risponde con un semplice _echo_.
+Configuriamo un bot Telegram collegato a n8n. 
 
-## Obiettivo dello step
+> Il nostro obiettivo: Inviare un messaggio e il bot risponde con lo stesso messaggio che inviamo. 
+> 
+>  Un eco.
 
-Comprendere il funzionamento dei webhook e verificare il collegamento bot ↔ n8n.
-
-## Competenze raggiunte
-
-- Creazione di un bot via **BotFather**
-- Ottenimento del **Bot Token**
-- Configurazione del nodo **Telegram Trigger**
-- Invio risposta tramite **Telegram Send Message**
-- Comprensione flusso “evento → risposta”
-
-## Passaggi pratici
-
-### **Creare un bot con BotFather**
-
-1. Aprire Telegram → cercare **BotFather**
-2. `/newbot`
-3. Assegnare nome e username
+1. Aprire BotFather su Telegram: [**BotFather**](https://t.me/BotFather)
+2. mandare il messaggio `/newbot`
+3. Assegnare nome del bot e username
 4. Copiare il **Bot Token**
 
 ### **Workflow n8n minimal**
