@@ -59,26 +59,23 @@ Così vai più veloce imparando cose nuove!
 - Editor di testo semplice (VSCode o altro)
 
 ---
+class: slide-compact
+---
 
 ### **2. Setup dell’ambiente locale**
 
 Questa sezione ci serve per partire tutti dallo stesso punto, ridurre i problemi di configurazione e avere un ambiente ripetibile che possiamo resettare in caso di errori.
 
-1. **Forka e clona il repository**
-   - Fork su GitHub (così ognuno lavora sul proprio spazio): https://github.com/ilmeskio/build-your-jarvis/fork
-   - Clone in locale.
+1. [**Forka e clona il repository**](https://github.com/ilmeskio/build-your-jarvis/fork)
 
 2. **Verifica che Docker sia attivo**
-   - Apri Docker Desktop (o avvia il demone Docker, se usi Docker Engine).
-   - Facoltativo ma utile: `docker --version` e `docker compose version` per verificare che la CLI risponda.
 
 3. **Avvia n8n con Docker Compose**
    - Dalla root del progetto esegui: `docker compose up -d`
-   - Se la tua installazione non rileva automaticamente il file, usa: `docker compose -f compose.yml up -d`
 
 4. **Controlla che n8n sia pronto**
-   - Segui i log finché n8n non segnala che l’editor è accessibile: `docker compose logs -f n8n`
    - Poi apri `http://localhost:5678` e completa l’onboarding (creazione utente admin e salvataggio credenziali).
+   - Attiva la licenza gratuita.
 
 5. **Ferma o resetta l’ambiente quando serve**
    - Stop dello stack: `docker compose down` (i dati restano nella cartella `./data`).
@@ -497,3 +494,28 @@ Alla fine del workshop ogni studente avrà:
 - AI Agent con memoria conversazionale
 
 Il workshop fornisce basi solide per future estensioni: GitHub, Notion, Google Suite, dashboard, automazioni avanzate.
+
+<style>
+:global(.slidev-layout.slide-compact) {
+  font-size: 0.82em;
+  line-height: 1.15;
+}
+
+:global(.slidev-layout.slide-compact h3) {
+  font-size: 1.35em;
+  margin: 0 0 0.3em 0;
+}
+
+:global(.slidev-layout.slide-compact p) {
+  margin: 0.25em 0;
+}
+
+:global(.slidev-layout.slide-compact ol),
+:global(.slidev-layout.slide-compact ul) {
+  margin: 0.25em 0;
+}
+
+:global(.slidev-layout.slide-compact li) {
+  margin: 0.15em 0;
+}
+</style>
