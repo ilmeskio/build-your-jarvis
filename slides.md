@@ -2,6 +2,7 @@
 title: Build Your Jarvis
 theme: default
 layout: cover
+transition: null
 ---
 
 # Build Your Jarvis
