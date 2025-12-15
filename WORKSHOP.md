@@ -82,12 +82,16 @@ Questa sezione ci serve per partire tutti dallo stesso punto, ridurre i problemi
    - Reset totale: elimina `./data` e riavvia lo stack (questo cancella workflow e credenziali, quindi facciamolo solo se vogliamo ripartire da zero).
 
 ---
+---
 
 ### **3. Account & API key necessari**
 
 - Account Telegram + app installata
-- Bot Telegram creato tramite **BotFather**  
-  → ottenimento del **Bot Token**
+- Bot Telegram creato tramite [**BotFather**](https://t.me/BotFather)
+  - Apri la chat con BotFather e invia `/newbot`.
+  - Scegli un nome (display) e uno username che termina con `bot` (lo username deve essere **unico** su tutto telegram. Scegliete il nome che volete).
+  - Copia il **Bot Token** e trattalo come una password.
+  - Guida ufficiale: https://core.telegram.org/bots/tutorial#obtain-your-bot-token
 - **Gemini API Key** (gratuita): https://ai.google.dev
 - **Account Supabase** + progetto vuoto creato in anticipo
 - **Pixabay API Key**: https://pixabay.com/api/docs/
