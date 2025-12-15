@@ -14,8 +14,11 @@ layout: cover
 
 ## Abstract del Workshop
 
-In questo workshop di 3 ore gli studenti costruiranno il proprio **Jarvis personale**, un assistente digitale basato su **n8n**, **Telegram**, **Gemini** e **Supabase**. Attraverso una serie di attività progressive, gli studenti impareranno a creare automazioni, gestire dati strutturati, utilizzare API esterne e integrare un AI Agent capace di comprendere il linguaggio naturale.  
-Il risultato finale sarà un assistente capace di gestire TODO, recuperare informazioni tramite API, cercare immagini e rispondere in modo intelligente.
+In questo workshop di 3 ore gli studenti costruiranno il proprio **Jarvis personale**, un assistente digitale basato su **n8n**, **Telegram**, **Gemini** e **Supabase**.
+
+Attraverso una serie di attività progressive, impareremo a creare automazioni, gestire dati strutturati, utilizzare API esterne e integrare un AI Agent capace di comprendere il linguaggio naturale.  
+
+Il risultato finale sarà un assistente capace di gestire TODO, recuperare informazioni tramite API, cercare immagini e rispondere in modo intelligente che potremo mano a mano rendere più complesso a seconda delle nostre necessità.
 
 ---
 
