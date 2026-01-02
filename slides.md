@@ -81,10 +81,29 @@ Questa sezione ci serve per partire tutti dallo stesso punto, ridurre i problemi
    - Attiva la licenza gratuita.
 
 5. **Esponi n8n via Cloudflare Tunnel (necessario per Telegram webhook)**
-   - Avvia: `cloudflared tunnel --url http://localhost:5678`
-   - Copia l'URL `https://...trycloudflare.com` che appare nel terminale
-   - Aggiorna `.env`: `N8N_PUBLIC_URL=https://random.trycloudflare.com` (senza slash finale!)
-   - Ricrea il container: `docker compose up -d --force-recreate`
+
+   Metodo automatico (raccomandato):
+
+   ```bash
+   chmod +x scripts/start-tunnel.sh
+   ./scripts/start-tunnel.sh
+   ```
+
+   Oppure tramite npm:
+
+   ```bash
+   pnpm tunnel:start
+   ```
+
+   Lo script gestisce automaticamente:
+
+   - Download di cloudflared (se mancante)
+   - Avvio tunnel in background
+   - Estrazione URL pubblico
+   - Aggiornamento `.env`
+   - Ricreazione container Docker
+
+   Al termine vedrai: `SUCCESS! Tunnel is accessible at: https://...trycloudflare.com`
 
 6. **Ferma o resetta l'ambiente quando serve**
    - Stop dello stack: `docker compose down` (i dati restano in `./data`).

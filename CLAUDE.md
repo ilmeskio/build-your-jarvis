@@ -95,7 +95,8 @@ pnpm format:slides
 
 ### Environment Variables (.env)
 
-The `.env` file is committed to the repository (workshop default values):
+The `.env.example` file is committed to the repository (workshop template).
+The `.env` file is gitignored and created from `.env.example` on first run:
 - `N8N_IMAGE`: Pinned Docker image tag (currently 2.0.2)
 - `N8N_PORT`: Host port mapping (default 5678)
 - `N8N_TIMEZONE`: Timezone for scheduled workflows (default UTC)
@@ -153,14 +154,16 @@ Follow the existing pattern from git history:
 - `./data/` directory is gitignored and contains sensitive credentials
 - Never commit actual `N8N_PUBLIC_URL` values with real tunnel hostnames
 - Workshop participants use personal API keys (Telegram, Gemini, Supabase)
-- `.env` is committed only because it contains workshop defaults, not secrets
+- `.env.example` is committed as a template; `.env` is gitignored and created locally
+- Scripts automatically create `.env` from `.env.example` on first run
 
 ## Repository Structure
 
 ```
 .
 ├── compose.yml          # Docker Compose configuration with narrative comments
-├── .env                 # Workshop defaults (committed, no secrets)
+├── .env.example         # Workshop template (committed)
+├── .env                 # Local configuration (gitignored, created from .env.example)
 ├── slides.md            # Slidev presentation source
 ├── README.md            # Workshop setup instructions (Italian)
 ├── AGENTS.md            # Repository guidelines for AI agents
@@ -168,6 +171,9 @@ Follow the existing pattern from git history:
 │   └── step-1-telegram-echo-bot.md  # Extended step-by-step guides
 ├── data/                # n8n persistent data (gitignored, sensitive)
 ├── dist/                # Built slides for GitHub Pages
+├── scripts/             # Automation scripts
+│   ├── start-tunnel.sh  # Cloudflare Tunnel automation
+│   └── stop-tunnel.sh   # Stop tunnel daemon
 └── .github/workflows/
     └── slides-pages.yml # CI for deploying slides
 ```
