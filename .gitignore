@@ -5,3 +5,17 @@ data
 node_modules
 .slidev
 dist
+
+# We keep a committed ".env.example" with workshop defaults.
+# Each participant creates their own .env from the example.
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+.env.test
+
+# Cloudflare tunnel automation artifacts
+.tunnel/
+bin/cloudflared
+.env.backup

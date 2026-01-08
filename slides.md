@@ -17,9 +17,9 @@ transition: null
 
 In questo workshop di 3 ore gli studenti costruiranno il proprio **Jarvis personale**, un assistente digitale basato su **n8n**, **Telegram**, **Gemini** e **Supabase**.
 
-Attraverso una serie di attività progressive, impareremo a creare automazioni, gestire dati strutturati, utilizzare API esterne e integrare un AI Agent capace di comprendere il linguaggio naturale.  
+Attraverso una serie di attività progressive, impareremo a creare automazioni, gestire dati strutturati, utilizzare API esterne e integrare un AI Agent capace di comprendere il linguaggio naturale.
 
-Il risultato finale sarà un assistente capace di gestire TODO, recuperare informazioni tramite API, cercare immagini e rispondere in modo intelligente che potremo mano a mano rendere più complesso a seconda delle nostre necessità.
+Il risultato finale sarà un assistente capace di gestire TODO, recuperare informazioni meteo e rispondere in modo intelligente che potremo mano a mano rendere più complesso a seconda delle nostre necessità.
 
 ---
 
@@ -39,13 +39,13 @@ Il risultato finale sarà un assistente capace di gestire TODO, recuperare infor
 
 Quello che genera ChatGPT spesso non è aggiornato o non completamente funzionante. Rischiate di perdere più tempo a capire come mai è sbagliato senza tirar fuori niente.
 
-  - **Usala come tutor**: chiedi perché una cosa funziona, non solo cosa scrivere.
-  - **Parti dalla doc**: incolla uno snippet delle API n8n e fatti spiegare “cosa fa ogni campo” + casi d’uso.
-  - **Chiedi esperimenti:** “dammi 3 micro-esercizi” (facile/medio/difficile) e una checklist di cosa devo osservare.
-  - **Fai debug guidato**: incolla errore + input/output, fatti proporre ipotesi e prove per confermarle.
-  - **Pretendi ragionamento:** “prima dimmi il piano, poi il codice” e “spiegami le alternative”.
-  - **Verifica e confronta**: chiedi “come lo controlleresti?” e poi esegui tu.
-  - **Tieniti il volante**: fai scrivere all’AI solo la base; le scelte (dati, flusso, naming) le fai tu.
+- **Usala come tutor**: chiedi perché una cosa funziona, non solo cosa scrivere.
+- **Parti dalla doc**: incolla uno snippet delle API n8n e fatti spiegare “cosa fa ogni campo” + casi d’uso.
+- **Chiedi esperimenti:** “dammi 3 micro-esercizi” (facile/medio/difficile) e una checklist di cosa devo osservare.
+- **Fai debug guidato**: incolla errore + input/output, fatti proporre ipotesi e prove per confermarle.
+- **Pretendi ragionamento:** “prima dimmi il piano, poi il codice” e “spiegami le alternative”.
+- **Verifica e confronta**: chiedi “come lo controlleresti?” e poi esegui tu.
+- **Tieniti il volante**: fai scrivere all’AI solo la base; le scelte (dati, flusso, naming) le fai tu.
 
 Così vai più veloce imparando cose nuove!
 
@@ -56,14 +56,15 @@ Così vai più veloce imparando cose nuove!
 ### **1. Software necessario**
 
 - Docker Desktop (o Docker Engine)
+- cloudflared ([download](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/downloads/))
 - n8n tramite Docker Compose (file fornito)
-- Editor di testo semplice (VSCode o altro)
+- Editor di testo semplice (VSCode o altro, opzionale)
 
 ---
 class: slide-compact
 ---
 
-### **2. Setup dell’ambiente locale**
+### **2. Setup dell'ambiente locale**
 
 Questa sezione ci serve per partire tutti dallo stesso punto, ridurre i problemi di configurazione e avere un ambiente ripetibile che possiamo resettare in caso di errori.
 
@@ -73,14 +74,40 @@ Questa sezione ci serve per partire tutti dallo stesso punto, ridurre i problemi
 
 3. **Avvia n8n con Docker Compose**
    - Dalla root del progetto esegui: `docker compose up -d`
+   - Controlla i log: `docker compose logs -f n8n` (attendi "Editor is now accessible")
 
-4. **Controlla che n8n sia pronto**
-   - Poi apri `http://localhost:5678` e completa l’onboarding (creazione utente admin e salvataggio credenziali).
+4. **Apri n8n localmente**
+   - Vai su `http://localhost:5678` e completa l'onboarding (creazione utente admin).
    - Attiva la licenza gratuita.
 
-5. **Ferma o resetta l’ambiente quando serve**
-   - Stop dello stack: `docker compose down` (i dati restano nella cartella `./data`).
-   - Reset totale: elimina `./data` e riavvia lo stack (questo cancella workflow e credenziali, quindi facciamolo solo se vogliamo ripartire da zero).
+5. **Esponi n8n via Cloudflare Tunnel (necessario per Telegram webhook)**
+
+   Metodo automatico (raccomandato):
+
+   ```bash
+   chmod +x scripts/start-tunnel.sh
+   ./scripts/start-tunnel.sh
+   ```
+
+   Oppure tramite npm:
+
+   ```bash
+   pnpm tunnel:start
+   ```
+
+   Lo script gestisce automaticamente:
+
+   - Download di cloudflared (se mancante)
+   - Avvio tunnel in background
+   - Estrazione URL pubblico
+   - Aggiornamento `.env`
+   - Ricreazione container Docker
+
+   Al termine vedrai: `SUCCESS! Tunnel is accessible at: https://...trycloudflare.com`
+
+6. **Ferma o resetta l'ambiente quando serve**
+   - Stop dello stack: `docker compose down` (i dati restano in `./data`).
+   - Reset totale: elimina `./data` e riavvia lo stack.
 
 ---
 
@@ -93,12 +120,11 @@ Questa sezione ci serve per partire tutti dallo stesso punto, ridurre i problemi
 
 # **Step 1 — Telegram Echo Bot**
 
+Configuriamo un bot Telegram collegato a n8n.
 
-Configuriamo un bot Telegram collegato a n8n. 
-
-> Il nostro obiettivo: Inviare un messaggio e il bot risponde con lo stesso messaggio che inviamo. 
-> 
->  Un eco.
+> Il nostro obiettivo: Inviare un messaggio e il bot risponde con lo stesso messaggio che inviamo.
+>
+> Un eco.
 
 ## Cosa facciamo (in breve)
 
@@ -163,6 +189,7 @@ Per permettere la visualizzazione dei comandi nel menu del bot:
    list - Mostra la lista dei TODO
    delete - Cancella un TODO tramite ID
    complete - Segna come completato un TODO tramite ID
+   meteo - Mostra il meteo per una città
    ```
 6. Salvare
 
@@ -239,156 +266,71 @@ Responsabile della risposta finale:
 
 ---
 
-# **Step 3 — Strumenti manuali (senza AI)**
+# **Step 3 — API Meteo con OpenWeatherMap**
 
 ## Descrizione
 
-Aggiunta di due strumenti tramite API:
-
-- **OpenWeatherMap** → meteo
-- **Pixabay** → immagini
+Integrazione con OpenWeatherMap per recuperare informazioni meteo tramite Telegram.
 
 ## Obiettivo dello step
 
-Imparare a consumare API esterne dentro n8n.
+Imparare a consumare API esterne dentro n8n usando sia nodi nativi che HTTP Request.
 
 ## Competenze raggiunte
 
-- Uso del nodo OpenWeatherMap
-- Uso del nodo HTTP Request
-- Mapping dei dati dall’API alla risposta Telegram
+- Uso del nodo OpenWeatherMap (nodo nativo n8n)
+- Parsing dei dati JSON dall'API
+- Formattazione della risposta per l'utente
+- Gestione delle API key nelle credenziali
 
-## Comandi
+## Comando
 
 - `/meteo <città>`
-- `/image <query>`
 
-### Template API Pixabay:
+### Endpoint API:
 
 ```
-GET https://pixabay.com/api?key=API_KEY&q=QUERY&image_type=photo&per_page=3
+GET https://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=metric
 ```
 
-## Nodi n8n da creare per gli strumenti manuali
+**Free tier**: 1,000 chiamate/giorno, 60 chiamate/minuto
 
-### **1. Meteo — OpenWeatherMap**
+---
+
+## Setup OpenWeatherMap
+
+Per usare l'API:
+
+1. **Crea l'account**: https://home.openweathermap.org/users/sign_up
+2. **Recupera la API key**: https://home.openweathermap.org/api_keys
+3. **Configura le credenziali in n8n** con la tua API key
+
+---
+
+## Nodi n8n da creare
 
 Per gestire `/meteo <città>`:
 
-- Crea l’account e genera una API key:
-  - Sign up: https://home.openweathermap.org/users/sign_up
-  - API keys: https://home.openweathermap.org/api_keys
-
-- **Telegram Trigger**  
+- **Telegram Trigger**
   Riceve il messaggio con la città.
 
-- **Function / Switch**  
-  Estrarre la parola dopo `/meteo`.
+- **Function / Switch**
+  Estrae la città dopo `/meteo`.
 
-- **Nodo OpenWeatherMap**
-  - Modalità: Current Weather (o Forecast)
-  - Input: Nome città → `{{$json["city"]}}`
-  - API Key configurata nelle credenziali
+- **OpenWeatherMap** (nodo nativo)
+  - Operation: Current Weather
+  - Location: `{{$json["city"]}}`
+  - Units: Metric
+  - Credentials: La tua API key
 
-- **Set / Function (opzionale)**  
-  Formattazione del testo in output.
+- **Set / Function** (opzionale)
+  Formatta la risposta:
+  - Temperatura: `{{$json["main"]["temp"]}}°C`
+  - Condizioni: `{{$json["weather"][0]["description"]}}`
+  - Umidità: `{{$json["main"]["humidity"]}}%`
 
-- **Telegram Send Message**  
-  Risposta con temperatura, condizioni meteo, ecc.
-
----
-
-### **2. Immagini — Pixabay**
-
-Per gestire `/image <query>`:
-
-- Crea l’account e recupera la API key qui (in alto trovi anche la documentazione): https://pixabay.com/api/docs/
-
-- **Telegram Trigger**  
-  Ottiene la query immagine.
-
-- **Function / Switch**  
-  Estrae ciò che segue `/image`.
-
-- **HTTP Request (GET)**
-  - URL: `https://pixabay.com/api`
-  - Query params:
-    - `key = {{ $env.PIXABAY_API_KEY }}`
-    - `q = {{ $json["query"] }}`
-    - `image_type = photo`
-    - `per_page = 3`
-
-- **Set / Function**
-  - Seleziona i primi link immagine da `hits[]`
-  - Prepara un output tipo:
-    ```
-    {
-      "images": ["url1", "url2", "url3"]
-    }
-    ```
-
--- **Telegram Send Message**  
- Manda i link o le immagini direttamente.
-
----
-
-### **Inviare immagini direttamente su Telegram (download da Pixabay)**
-
-Per migliorare l’esperienza utente, invece di inviare solo il link dell’immagine, possiamo **scaricare l’immagine** da Pixabay e poi **inviarla direttamente su Telegram** come foto.
-
-## Nodi aggiuntivi da inserire
-
-### **1. Set / Function — Estrarre URL immagine**
-
-Dopo il nodo HTTP Request (Pixabay), estrarre l’URL della prima immagine:
-
-- Campo: `imageUrl`
-- Valore: `{{$json["hits"][0]["largeImageURL"]}}`
-
-### **2. HTTP Request — Download dell’immagine**
-
-Scaricare l’immagine in formato binario.
-
-Configurazione:
-
-- **Method:** GET
-- **URL:** `{{$json["imageUrl"]}}`
-- **Response Format:** _File_
-- **Binary Property:** `data`
-
-Questo crea un file binario chiamato `data`.
-
-### **3. Telegram Send Photo — Invio dell’immagine**
-
-Inviare l’immagine direttamente alla chat.
-
-Configurazione:
-
-- **Chat ID:** `{{$json["message"]["chat"]["id"]}}`
-- **Photo:** `data`
-- **Caption (opzionale):** “Ecco un’immagine che ho trovato per te!”
-
-## Flusso completo
-
-```
-Telegram Trigger
-   ↓
-Function / Switch (interpreta /image)
-   ↓
-HTTP Request (Pixabay API)
-   ↓
-Set (estrai imageUrl)
-   ↓
-HTTP Request (download → binary:data)
-   ↓
-Telegram Send Photo (photo=data)
-```
-
-Questo approccio rende il bot più professionale e migliora l’esperienza degli studenti, che vedranno l’immagine direttamente nel bot invece che come semplice link.
-
----
-
-Questi nodi preparano correttamente il terreno per lo Step 4, in cui l’AI Agent userà automatismi per scegliere da solo quale strumento invocare.
+- **Telegram Send Message**
+  Invia la risposta formattata all'utente
 
 ---
 
@@ -441,15 +383,7 @@ Passare da bot basato su comandi a un assistente intelligente e autonomo.
 
 ### **WEATHER_GET**
 
-Usa OpenWeatherMap per recuperare il meteo.
-
-### **IMAGE_SEARCH**
-
-Usa Pixabay:
-
-```
-https://pixabay.com/api?key=KEY&q=query&image_type=photo&per_page=3
-```
+Usa OpenWeatherMap per recuperare il meteo (collegato allo Step 3).
 
 ---
 
@@ -466,15 +400,53 @@ Usata per:
 
 # **Step 5 — Moduli opzionali (per i veloci)**
 
-### **Google Calendar**
+Questi moduli sono pensati per chi completa i primi 4 step velocemente e vuole esplorare ulteriori integrazioni.
 
-- Creazione eventi
-- Lettura calendario
+---
 
-### **Gmail**
+## **1. Ricerca Immagini con Pixabay**
 
-- Comporre email
+### Setup
+
+- Crea l'account: https://pixabay.com/api/docs/
+- Recupera la API key (in alto nella documentazione)
+
+### Comando
+
+- `/image <query>`
+
+### Endpoint API
+
+```
+GET https://pixabay.com/api?key=API_KEY&q=QUERY&image_type=photo&per_page=3
+```
+
+### Nodi da creare
+
+- **HTTP Request** per chiamare l'API Pixabay
+- **Set/Function** per estrarre URL immagini da `hits[]`
+- **HTTP Request (binary)** per scaricare l'immagine
+- **Telegram Send Photo** per inviare l'immagine direttamente
+
+### Tool per AI Agent
+
+Crea `IMAGE_SEARCH` tool che l'AI può invocare automaticamente quando l'utente chiede immagini.
+
+---
+
+## **2. Google Calendar**
+
+- Creazione eventi da richieste in linguaggio naturale
+- Lettura calendario per controllare disponibilità
+- Integrazione con TODO (es. "crea evento per questo TODO")
+
+---
+
+## **3. Gmail**
+
+- Comporre email con l'AI
 - Inviare email
+- Lettura inbox (opzionale)
 
 ---
 
@@ -482,13 +454,14 @@ Usata per:
 
 Alla fine del workshop ogni studente avrà:
 
-- un proprio Jarvis funzionante
-- un bot Telegram intelligente
-- integrazione con Supabase (TODO)
-- API meteo e immagini
+- Un proprio Jarvis funzionante
+- Un bot Telegram intelligente
+- Integrazione con Supabase (gestione TODO persistenti)
+- API esterna per informazioni meteo
 - AI Agent con memoria conversazionale
+- (Opzionale) Ricerca immagini, Google Calendar, Gmail
 
-Il workshop fornisce basi solide per future estensioni: GitHub, Notion, Google Suite, dashboard, automazioni avanzate.
+Il workshop fornisce basi solide per future estensioni: GitHub, Notion, altre API, dashboard, automazioni avanzate e molto altro.
 
 <style>
 :global(.slidev-layout.slide-compact) {

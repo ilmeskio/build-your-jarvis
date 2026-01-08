@@ -4,7 +4,7 @@
   "proseWrap": "preserve",
   "overrides": [
     {
-      "files": ["WORKSHOP.md"],
+      "files": ["slides.md"],
       "options": {
         "parser": "slidev",
         "plugins": ["prettier-plugin-slidev"]
