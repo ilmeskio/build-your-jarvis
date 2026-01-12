@@ -45,20 +45,20 @@ Qui mettiamo insieme le prime due competenze operative:
 Questa parte esiste perché vogliamo che n8n “ascolti” la chat interna e crei un’esecuzione ogni volta che scriviamo.
 
 1. Clicchiamo `+` e cerchiamo **Chat Trigger**
-2. Lasciamo le impostazioni di default
-3. Avviamo l’ascolto con **Listen for test event**
+2. Aggiungiamo un campo response mode
+3. impostare con "Using Response Nodes"
 4. Apriamo la chat di n8n e scriviamo un messaggio (es. `ciao`)
 
 Se tutto è a posto, n8n cattura un evento e fa una esecuzione. Nella tab esecuzioni vediamo tutte le esecuzioni.
 Il campo che ci interessa di solito è quello del testo in ingresso (es. `chatInput`).
 Se non lo vediamo, controlliamo l’output del nodo e usiamo il campo reale disponibile nella nostra UI.
 
-### 2.3 Nodo 2: `Respond to Chat` / `Chat Respond` (rispondiamo)
+### 2.3 Nodo 2: `Respond to Chat`
 
 Questa parte esiste perché, una volta ricevuto il messaggio, vogliamo rispondere nello stesso punto con una regola semplice: “rimanda indietro lo stesso testo”.
 
-1. Aggiungiamo il nodo di risposta chat (nome può variare: **Respond to Chat** o **Chat Respond**)
-2. Nel campo **Text** usiamo una *Expression* che rimanda il testo ricevuto, ad esempio:
+1. Aggiungiamo il nodo di risposta chat **Respond to Chat** 
+2. Nel campo **Text** usiamo una *Expression* che rimanda il testo ricevuto. Possiamo trascinare la variabile oppure scrivere:
    - `{{ $json["chatInput"] }}`
 3. Colleghiamo `Chat Trigger` → `Respond to Chat`
 
@@ -67,30 +67,6 @@ Perché questi valori arrivano dall’evento in ingresso: non possiamo scriverli
 
 ### 2.4 Test e attivazione
 
-Qui separiamo due modalità, così sappiamo cosa aspettarci quando facciamo debug:
+- **Publish**: rende il workflow “sempre in ascolto” e risponde anche quando non siamo in modalità test.
 
-- **Test / Execute workflow**: esegue con un evento di test e ci fa vedere i dati nodo per nodo.
-- **Activate**: rende il workflow “sempre in ascolto” e risponde anche quando non siamo in modalità test.
-
-Una volta che il bot risponde correttamente, clicchiamo **Activate**.
-
----
-
-## Troubleshooting (i problemi più comuni)
-
-### Non arriva nessun evento al `Chat Trigger`
-
-- Verifichiamo che il workflow sia in modalità **Listen for test event**.
-- Controlliamo che stiamo usando la chat integrata di n8n (non un’altra finestra).
-- Se ancora non arriva nulla, stoppiamo e riavviamo l’ascolto.
-
-### Il trigger riceve, ma la risposta non arriva
-
-- Controlliamo che il nodo di risposta sia collegato al trigger.
-- Verifichiamo che **Text** sia in modalità *Expression*.
-- Apriamo l’output del trigger e usiamo il campo reale del testo (es. `chatInput`).
-
-### Risposte duplicate
-
-- Di solito succede quando abbiamo più workflow attivi che ascoltano la chat.
-  Disattiviamo gli altri workflow e teniamo attivo solo `Step 1 - Chat echo bot`.
+Una volta che il bot risponde correttamente, clicchiamo **Publish**.

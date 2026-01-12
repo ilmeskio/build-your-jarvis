@@ -12,12 +12,10 @@ Questa sezione esiste perché Telegram richiede un token per autenticare le chia
 2. Scriviamo `/newbot`
 3. Scegliamo:
    - un **nome** (quello che vedremo in chat)
-   - uno **username** (deve finire con `bot`, es. `MyWorkshopEchoBot`)
+   - uno **username** (deve finire con `bot`, es. `JarvisBot`, e non deve essere usato da qualcun altro) 
 4. Copiamo il **Bot Token** (è una stringa lunga, trattiamola come un segreto)
 5. Apriamo la chat con il bot appena creato e mandiamo `/start`
 
-Perché facciamo `/start`?
-Perché così Telegram “apre” la chat e noi siamo sicuri di avere un contesto reale per ricevere eventi e rispondere.
 
 ---
 
@@ -27,19 +25,20 @@ Qui replichiamo il flusso visto nello Step 1, ma con nodi Telegram.
 
 1. Aggiungiamo un **Telegram Trigger** (evento **On Message**)
 2. Creiamo una credenziale Telegram e incolliamo il **Bot Token**
-3. Aggiungiamo un **Telegram Send Message**
-4. Impostiamo:
-   - **Chat ID** → `{{ $json["message"]["chat"]["id"] }}`
-   - **Text** → `{{ $json["message"]["text"] }}`
-5. Colleghiamo i nodi e attiviamo il workflow
+
+
+Clicchiamo su execute step e mandiamo un messaggio sul bot e vedremo il messaggio sulla destra.
+
+Pinniamo i dati!
+
 
 ---
 
-## 3) Test veloce
+## 3) Rispondiamo
 
-- Scriviamo al bot su Telegram.
-- Se il tunnel è attivo e il workflow è attivo, dovremmo ricevere l’eco.
-- Se non arriva nulla, controlliamo che:
-  - il workflow sia **Activate**
-  - il tunnel sia in esecuzione
-  - il bot token sia corretto
+3. Aggiungiamo un **Telegram Send a Text Message**
+4. Impostiamo:
+   - **Chat ID** → `{{ $json["message"]["chat"]["id"] }}`
+   - **Text** → `{{ $json["message"]["text"] }}`
+5. Colleghiamo i nodi ed eseguiamo lo step con i dati pinnati
+6. Aggiungiamo un field "Append n8n attribution" e disattiviamolo
