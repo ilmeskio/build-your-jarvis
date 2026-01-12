@@ -30,20 +30,28 @@ Aggiungiamo un ramo per `/list` nel nostro workflow dove abbiamo fatto l'estrazi
 3. **Function** (costruiamo il testo della lista)
    - Incolliamo questo snippet:
    ```js
-    // Prendiamo tutti gli items in ingresso (uno per TODO)
+    // Prendiamo tutti gli items in ingresso (uno per TODO).
     const items = $input.all();
 
-    if (items.length === 0) {
-        return { reply: "Nessun TODO ancora 🎉" };
+    // Quando abilitiamo "Always Output Data", il nodo Data Table
+    // restituisce un item vuoto (json = {}) anche senza risultati.
+    // Filtriamo quindi solo gli items validi.
+    const validItems = items.filter(item => {
+        const row = item.json ?? {};
+        return Object.keys(row).length > 0 && row.id != null && row.text;
+    });
+
+    if (validItems.length === 0) {
+        return [{ json: { reply: "Nessun TODO ancora 🎉" } }];
     }
 
     // Costruiamo le righe della lista
-    const lines = items.map(item => {
+    const lines = validItems.map(item => {
         const row = item.json;
         return `#${row.id} — ${row.text}`;
     });
 
-    return { reply: lines.join('\n') };
+    return [{ json: { reply: lines.join('\n') } }];
    ```
 4. **Telegram Send Message**
    - Testo: `{{ $json.reply }}`
@@ -55,3 +63,8 @@ Aggiungiamo un ramo per `/list` nel nostro workflow dove abbiamo fatto l'estrazi
 
 - Inviamo `/list`.
 - Controlliamo che la risposta mostri solo i TODO non completati.
+
+Nota: se abilitiamo "Always Output Data" sul nodo Data Table,
+vedremo sempre almeno un item in ingresso anche quando la query
+non restituisce righe. Per questo filtriamo gli items vuoti prima
+di costruire la risposta.
