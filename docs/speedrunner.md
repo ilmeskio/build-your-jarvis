@@ -75,6 +75,10 @@ GET https://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&uni
 
 Questi moduli sono pensati per chi ha tempo extra e vuole esplorare altre integrazioni.
 
+### 0) TODO extra: comando `/delete`
+
+Se vogliamo anche la rimozione, aggiungiamo il comando `/delete` nella lista e il nodo **Data Table** in modalità **Delete**.
+
 ### 1) Ricerca Immagini con Pixabay
 
 #### Setup

@@ -28,10 +28,9 @@ Il risultato finale sarà un assistente capace di gestire TODO e rispondere in m
 - L’obiettivo principale è **imparare facendo**.
 - Non serve conoscere tutto subito: si procede **per passi**, ogni step aggiunge un pezzo.
 - Gli errori sono parte del processo: si risolvono insieme.
-- Ognuno ha il proprio ritmo: alcune sezioni sono **facoltative** per chi è più veloce.
+- Ritmi diversi, stesso obiettivo: chi è avanti può continuare con la speedrunner ([docs/speedrunner.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/speedrunner.md)).
 - Collaborazione: aiutare un compagno significa imparare due volte.
 - Rispetto delle risorse comuni: API key personali, nessun uso improprio.
-- Usate pure ChatGPT, ma fate attenzione...
 
 ---
 
@@ -40,7 +39,6 @@ Il risultato finale sarà un assistente capace di gestire TODO e rispondere in m
 ### **1. Software necessario**
 
 - Docker Desktop (o Docker Engine)
-- cloudflared ([download](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/downloads/))
 - n8n tramite Docker Compose (file fornito)
 - Editor di testo semplice (VSCode o altro, opzionale)
 
@@ -50,36 +48,24 @@ class: slide-compact
 
 ### **2. Setup dell'ambiente locale**
 
-Questa sezione ci serve per partire tutti dallo stesso punto, ridurre i problemi di configurazione e avere un ambiente ripetibile che possiamo resettare in caso di errori.
-
 1. [**Forka e clona il repository**](https://github.com/ilmeskio/build-your-jarvis/fork)
 
 2. **Verifica che Docker sia attivo**
 
-3. **Avvia n8n con Docker Compose**
-   - Dalla root del progetto esegui: `docker compose up -d`
-   - Controlla i log: `docker compose logs -f n8n` (attendi "Editor is now accessible")
-
-4. **Apri n8n localmente**
-   - Vai su `http://localhost:5678` e completa l'onboarding (creazione utente admin).
-   - Attiva la licenza gratuita.
-
-5. **Esponi n8n via Cloudflare Tunnel (necessario per Telegram webhook)**
-
-   Metodo automatico (raccomandato):
-
+3. **Avvia tutto con lo script unico**
+   - Dalla root del progetto esegui:
    ```bash
-   chmod +x scripts/start
    ./scripts/start
    ```
+   - Lo script gestisce n8n, tunnel e variabili `.env`
 
-   Al termine vedrai: `SUCCESS! Tunnel is accessible at: https://...trycloudflare.com`
+4. **Apri n8n dal link dello script**
+   - Dopo l’avvio vedrai una riga tipo: `SUCCESS! Tunnel is accessible at: https://...trycloudflare.com`
+   - Usa quell’URL e completa l'onboarding (creazione utente admin).
+   - Attiva la licenza gratuita.
 
-   Usa questo link!
-
-6. **Ferma o resetta l'ambiente quando serve**
+5. **Ferma o resetta l'ambiente quando serve**
    ```bash
-   chmod +x scripts/stop
    ./scripts/stop
    ```
 
@@ -95,12 +81,12 @@ Creiamo un mini bot di chat direttamente in n8n per capire il flusso base senza 
 
 ---
 
-## Principi base di n8n (in 3 minuti)
+## Principi base di n8n
 
 - Un **workflow** è una sequenza di nodi collegati.
-- Ogni workflow parte da un **trigger** (evento) e finisce con una o più **azioni**.
-- I dati viaggiano tra i nodi in **JSON**: ogni nodo può leggere e trasformare questi dati.
-- Le **execution** sono le “corse” del workflow: ogni messaggio genera una nuova esecuzione.
+- Ogni workflow parte da un **trigger** (evento che scatena un innesco del workflow) e finisce con una o più **azioni**.
+- I dati viaggiano tra i nodi in formato **JSON**: ogni nodo può leggere e trasformare questi dati.
+- Ogni volta che arriva un evento del **trigger**, n8n esegue il workflow e crea una nuova **execution**.
 
 ---
 
@@ -136,123 +122,62 @@ Portiamo lo stesso flusso dell’eco fuori da n8n, collegandolo a Telegram.
 
 ---
 
-# **Step 3 — TODO con Data Tables (senza AI)**
+# **Step 3 — TODO con Data Tables (panoramica)**
 
-## Descrizione
+In questo blocco trasformiamo il bot in qualcosa di utile: una lista TODO persistente.
+Useremo i comandi di Telegram per aggiungere, vedere e completare i TODO.
 
-Creazione della tabella dei TODO con **Data Tables** di n8n e gestione manuale tramite comandi Telegram.
+---
 
-## Obiettivo dello step
+# **Step 3A — TODO con Data Tables: crea tabella + /add**
 
-Capire come un bot può salvare e leggere dati persistenti usando lo storage nativo di n8n.
+Mettiamo i TODO dentro le **Data Tables** di n8n e iniziamo ad aggiungerli.
 
-## Competenze raggiunte
+## Cosa facciamo
 
+- Creiamo la tabella `todos`
+- Aggiungiamo un TODO con `/add <testo>`
+
+## Mini‑guida nel repo
+
+- [docs/step-3a-todo-add.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/step-3a-todo-add.md)
+
+---
+
+# **Step 3B — TODO con Data Tables: /list**
+
+Ora mostriamo la lista dei TODO.
+
+## Cosa facciamo
+
+- Recuperiamo i TODO della nostra chat
+- Rispondiamo con una lista leggibile
+
+## Mini‑guida nel repo
+
+- [docs/step-3b-todo-list.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/step-3b-todo-list.md)
+
+---
+
+# **Step 3C — TODO con Data Tables: /complete**
+
+Chiudiamo il ciclo segnando un TODO come completato.
+
+## Cosa facciamo
+
+- Aggiorniamo `is_done = true` con `/complete <id>`
+- Verifichiamo che sparisca dalla lista
+
+<!--
+Competenze raggiunte (non da presentare):
 - Creazione Data Table `todos`
 - Operazioni CRUD con Data Tables
 - Routing tramite comandi Telegram
+-->
 
-## Struttura della tabella `todos`
+## Mini‑guida nel repo
 
-| colonna    | tipo      | note                     |
-| ---------- | --------- | ------------------------ |
-| id         | text/uuid | generato automaticamente |
-| user_id    | text      | id chat Telegram         |
-| text       | text      | contenuto TODO           |
-| priority   | text      | bassa / media / alta     |
-| due_date   | datetime  | opzionale                |
-| is_done    | boolean   | default: false           |
-| created_at | datetime  | default: now()           |
-
-### **Creare i comandi personalizzati del bot**
-
-Per permettere la visualizzazione dei comandi nel menu del bot:
-
-1. Aprire **BotFather**
-2. `/mybots` → selezionare il bot
-3. **Bot Settings**
-4. **Commands** (o `/setcommands`)
-5. Inserire:
-   ```
-   add - Aggiunge un nuovo TODO
-   list - Mostra la lista dei TODO
-   delete - Cancella un TODO tramite ID
-   complete - Segna come completato un TODO tramite ID
-   ```
-6. Salvare
-
-## Comandi da implementare (senza AI)
-
-- `/add <testo> <priorità>`
-- `/list`
-- `/delete <id>`
-- `/complete <id>` → aggiorna `is_done = true`
-
-## Nodi n8n da creare per la gestione dei TODO (senza AI)
-
-Per implementare i comandi sopra elencati, ogni comando richiede una piccola struttura di nodi.
-
-### **1. Nodo Telegram Trigger**
-
-- Ascolta i messaggi in arrivo.
-- Recupera testo, chat_id e parametri del comando.
-
-### **2. Nodo Function / Switch**
-
-Serve a distinguere quale comando è stato inviato:
-
-- `/add`
-- `/list`
-- `/delete`
-- `/complete`
-
-Può essere un nodo:
-
-- **Switch** → confronto per testo che inizia con `/add`, `/list`, ecc.
-- Oppure un nodo **Function** che smista il flusso.
-
-### **3. Nodi Data Tables**
-
-Per ciascuna operazione CRUD:
-
-#### `/add` → Inserimento TODO
-
-- Nodo **Data Table** (Create/Insert)
-  - Tabella: `todos`
-  - Campi richiesti:
-    - `user_id = {{$json["message"]["from"]["id"]}}`
-    - `text` (estratto dal messaggio)
-    - `priority`
-    - `due_date` (se presente)
-
-#### `/list` → Lettura TODO
-
-- Nodo **Data Table** (Get/Select)
-  - Filtri:
-    - `user_id = chat_id`
-    - `is_done = false`
-
-#### `/delete` → Eliminazione TODO
-
-- Nodo **Data Table** (Delete)
-  - Filtro: `id = <id passato dal comando>`
-
-#### `/complete` → Aggiornamento TODO
-
-- Nodo **Data Table** (Update)
-  - Set: `is_done = true`
-  - Filtro: `id = <id passato dal comando>`
-
-### **4. Nodo Telegram Send Message**
-
-Responsabile della risposta finale:
-
-- Conferma inserimento
-- Lista dei TODO
-- Conferma eliminazione
-- Conferma completamento
-
----
+- [docs/step-3c-todo-complete.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/step-3c-todo-complete.md)
 
 ---
 
