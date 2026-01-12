@@ -120,19 +120,19 @@ Per i passaggi dettagliati (nodi, mapping, troubleshooting) usiamo:
 
 # **Step 2 — Telegram Echo Bot**
 
-Configuriamo un bot Telegram collegato a n8n.
-
-> Il nostro obiettivo: Inviare un messaggio e il bot risponde con lo stesso messaggio che inviamo.
->
-> Un eco.
+Portiamo lo stesso flusso dell’eco fuori da n8n, collegandolo a Telegram.
 
 ## Cosa facciamo (in breve)
 
 1. Creiamo un bot con BotFather e copiamo il **Bot Token**
-2. In n8n creiamo un workflow con:
+2. Riutilizziamo la stessa logica dello Step 1 ma con i nodi Telegram:
    - `Telegram Trigger` (evento **On Message**) per ricevere i messaggi
    - `Telegram Send Message` per rispondere nella stessa chat
-3. Testiamo e poi **Activate** per renderlo sempre attivo
+3. Verifichiamo il webhook (tunnel attivo) e poi **Activate** per renderlo sempre attivo
+
+## Mini‑guida nel repo
+
+- [docs/step-2-telegram-echo-bot.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/step-2-telegram-echo-bot.md)
 
 ---
 
