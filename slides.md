@@ -241,14 +241,6 @@ Usata per:
 
 ---
 
-# **Step 5 — Moduli opzionali (per i veloci)**
-
-I moduli opzionali sono stati spostati nella doc speedrunner:
-
-👉 [docs/speedrunner.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/speedrunner.md)
-
----
-
 # **Conclusione**
 
 Alla fine del workshop ogni studente avrà:
