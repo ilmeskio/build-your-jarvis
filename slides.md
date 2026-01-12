@@ -7,7 +7,7 @@ transition: null
 
 # Build Your Jarvis
 
-## n8n · Telegram · Gemini · Supabase
+## n8n · Telegram · Gemini
 
 ### Workshop
 
@@ -15,11 +15,11 @@ transition: null
 
 ## Abstract del Workshop
 
-In questo workshop di 3 ore gli studenti costruiranno il proprio **Jarvis personale**, un assistente digitale basato su **n8n**, **Telegram**, **Gemini** e **Supabase**.
+In questo workshop di 3 ore gli studenti costruiranno il proprio **Jarvis personale**, un assistente digitale basato su **n8n**, **Telegram** e **Gemini**.
 
-Attraverso una serie di attività progressive, impareremo a creare automazioni, gestire dati strutturati, utilizzare API esterne e integrare un AI Agent capace di comprendere il linguaggio naturale.
+Attraverso una serie di attività progressive, impareremo a creare automazioni, gestire dati strutturati con le **Data Tables** di n8n e integrare un AI Agent capace di comprendere il linguaggio naturale.
 
-Il risultato finale sarà un assistente capace di gestire TODO, recuperare informazioni meteo e rispondere in modo intelligente che potremo mano a mano rendere più complesso a seconda delle nostre necessità.
+Il risultato finale sarà un assistente capace di gestire TODO e rispondere in modo intelligente che potremo mano a mano rendere più complesso a seconda delle nostre necessità.
 
 ---
 
@@ -32,22 +32,6 @@ Il risultato finale sarà un assistente capace di gestire TODO, recuperare infor
 - Collaborazione: aiutare un compagno significa imparare due volte.
 - Rispetto delle risorse comuni: API key personali, nessun uso improprio.
 - Usate pure ChatGPT, ma fate attenzione...
-
----
-
-## Come usare l'AI in maniera furba
-
-Quello che genera ChatGPT spesso non è aggiornato o non completamente funzionante. Rischiate di perdere più tempo a capire come mai è sbagliato senza tirar fuori niente.
-
-- **Usala come tutor**: chiedi perché una cosa funziona, non solo cosa scrivere.
-- **Parti dalla doc**: incolla uno snippet delle API n8n e fatti spiegare “cosa fa ogni campo” + casi d’uso.
-- **Chiedi esperimenti:** “dammi 3 micro-esercizi” (facile/medio/difficile) e una checklist di cosa devo osservare.
-- **Fai debug guidato**: incolla errore + input/output, fatti proporre ipotesi e prove per confermarle.
-- **Pretendi ragionamento:** “prima dimmi il piano, poi il codice” e “spiegami le alternative”.
-- **Verifica e confronta**: chiedi “come lo controlleresti?” e poi esegui tu.
-- **Tieniti il volante**: fai scrivere all’AI solo la base; le scelte (dati, flusso, naming) le fai tu.
-
-Così vai più veloce imparando cose nuove!
 
 ---
 
@@ -85,40 +69,56 @@ Questa sezione ci serve per partire tutti dallo stesso punto, ridurre i problemi
    Metodo automatico (raccomandato):
 
    ```bash
-   chmod +x scripts/start-tunnel.sh
-   ./scripts/start-tunnel.sh
+   chmod +x scripts/start
+   ./scripts/start
    ```
-
-   Oppure tramite npm:
-
-   ```bash
-   pnpm tunnel:start
-   ```
-
-   Lo script gestisce automaticamente:
-
-   - Download di cloudflared (se mancante)
-   - Avvio tunnel in background
-   - Estrazione URL pubblico
-   - Aggiornamento `.env`
-   - Ricreazione container Docker
 
    Al termine vedrai: `SUCCESS! Tunnel is accessible at: https://...trycloudflare.com`
 
+   Usa questo link!
+
 6. **Ferma o resetta l'ambiente quando serve**
-   - Stop dello stack: `docker compose down` (i dati restano in `./data`).
-   - Reset totale: elimina `./data` e riavvia lo stack.
+   ```bash
+   chmod +x scripts/stop
+   ./scripts/stop
+   ```
 
 ---
 
-### **3. Account & API key necessari**
+# **Step 1 — Chat Echo Bot: primi passi in n8n**
 
-- Un account Google (ci servirà per creare la Gemini API key quando arriviamo allo step AI).
-- Un account Telegram con app installata (meglio anche Telegram Desktop, così copiare/incollare è più comodo).
+Creiamo un mini bot di chat direttamente in n8n per capire il flusso base senza dipendenze esterne.
+
+> Il nostro obiettivo: scrivere un messaggio nella chat di n8n e ricevere la stessa risposta.
+>
+> Un eco.
 
 ---
 
-# **Step 1 — Telegram Echo Bot**
+## Principi base di n8n (in 3 minuti)
+
+- Un **workflow** è una sequenza di nodi collegati.
+- Ogni workflow parte da un **trigger** (evento) e finisce con una o più **azioni**.
+- I dati viaggiano tra i nodi in **JSON**: ogni nodo può leggere e trasformare questi dati.
+- Le **execution** sono le “corse” del workflow: ogni messaggio genera una nuova esecuzione.
+
+---
+
+## Cosa facciamo (in breve)
+
+1. Creiamo un workflow con `Chat Trigger`
+2. Aggiungiamo `Chat Respond` per rispondere con lo stesso testo
+3. Testiamo e poi **Activate** per renderlo sempre attivo
+
+## Guida estesa nel repo
+
+Per i passaggi dettagliati (nodi, mapping, troubleshooting) usiamo:
+
+- [docs/step-1-chat-echo-bot.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/step-1-chat-echo-bot.md)
+
+---
+
+# **Step 2 — Telegram Echo Bot**
 
 Configuriamo un bot Telegram collegato a n8n.
 
@@ -134,46 +134,35 @@ Configuriamo un bot Telegram collegato a n8n.
    - `Telegram Send Message` per rispondere nella stessa chat
 3. Testiamo e poi **Activate** per renderlo sempre attivo
 
-## Guida estesa nel repo
-
-Per i passaggi dettagliati (trigger, credenziali, expression, troubleshooting) usiamo:
-
-- [docs/step-1-telegram-echo-bot.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/step-1-telegram-echo-bot.md)
-
 ---
 
-# **Step 2 — TODO con Supabase (senza AI)**
+# **Step 3 — TODO con Data Tables (senza AI)**
 
 ## Descrizione
 
-Creazione della tabella dei TODO su Supabase e gestione manuale tramite comandi Telegram.
-
-## Setup Supabase (quando arriviamo a questo step)
-
-- Crea (o apri) un progetto Supabase da qui: https://database.new
-- Ci serviranno **Project URL** e **anon key** per configurare le credenziali in n8n.
+Creazione della tabella dei TODO con **Data Tables** di n8n e gestione manuale tramite comandi Telegram.
 
 ## Obiettivo dello step
 
-Capire come un bot può salvare e leggere dati persistenti da un database.
+Capire come un bot può salvare e leggere dati persistenti usando lo storage nativo di n8n.
 
 ## Competenze raggiunte
 
-- Creazione tabella su Supabase
-- Operazioni CRUD con nodo Supabase
+- Creazione Data Table `todos`
+- Operazioni CRUD con Data Tables
 - Routing tramite comandi Telegram
 
-## Tabella `todos` da creare in Supabase
+## Struttura della tabella `todos`
 
-| colonna    | tipo        | note                     |
-| ---------- | ----------- | ------------------------ |
-| id         | uuid (PK)   | generato automaticamente |
-| user_id    | text        | id chat Telegram         |
-| text       | text        | contenuto TODO           |
-| priority   | text        | bassa / media / alta     |
-| due_date   | timestamptz | opzionale                |
-| is_done    | boolean     | default: false           |
-| created_at | timestamptz | default: now()           |
+| colonna    | tipo      | note                     |
+| ---------- | --------- | ------------------------ |
+| id         | text/uuid | generato automaticamente |
+| user_id    | text      | id chat Telegram         |
+| text       | text      | contenuto TODO           |
+| priority   | text      | bassa / media / alta     |
+| due_date   | datetime  | opzionale                |
+| is_done    | boolean   | default: false           |
+| created_at | datetime  | default: now()           |
 
 ### **Creare i comandi personalizzati del bot**
 
@@ -189,7 +178,6 @@ Per permettere la visualizzazione dei comandi nel menu del bot:
    list - Mostra la lista dei TODO
    delete - Cancella un TODO tramite ID
    complete - Segna come completato un TODO tramite ID
-   meteo - Mostra il meteo per una città
    ```
 6. Salvare
 
@@ -223,13 +211,13 @@ Può essere un nodo:
 - **Switch** → confronto per testo che inizia con `/add`, `/list`, ecc.
 - Oppure un nodo **Function** che smista il flusso.
 
-### **3. Nodi Supabase**
+### **3. Nodi Data Tables**
 
 Per ciascuna operazione CRUD:
 
 #### `/add` → Inserimento TODO
 
-- Nodo **Supabase Insert**
+- Nodo **Data Table** (Create/Insert)
   - Tabella: `todos`
   - Campi richiesti:
     - `user_id = {{$json["message"]["from"]["id"]}}`
@@ -239,19 +227,19 @@ Per ciascuna operazione CRUD:
 
 #### `/list` → Lettura TODO
 
-- Nodo **Supabase Select**
+- Nodo **Data Table** (Get/Select)
   - Filtri:
     - `user_id = chat_id`
     - `is_done = false`
 
 #### `/delete` → Eliminazione TODO
 
-- Nodo **Supabase Delete**
+- Nodo **Data Table** (Delete)
   - Filtro: `id = <id passato dal comando>`
 
 #### `/complete` → Aggiornamento TODO
 
-- Nodo **Supabase Update**
+- Nodo **Data Table** (Update)
   - Set: `is_done = true`
   - Filtro: `id = <id passato dal comando>`
 
@@ -265,72 +253,6 @@ Responsabile della risposta finale:
 - Conferma completamento
 
 ---
-
-# **Step 3 — API Meteo con OpenWeatherMap**
-
-## Descrizione
-
-Integrazione con OpenWeatherMap per recuperare informazioni meteo tramite Telegram.
-
-## Obiettivo dello step
-
-Imparare a consumare API esterne dentro n8n usando sia nodi nativi che HTTP Request.
-
-## Competenze raggiunte
-
-- Uso del nodo OpenWeatherMap (nodo nativo n8n)
-- Parsing dei dati JSON dall'API
-- Formattazione della risposta per l'utente
-- Gestione delle API key nelle credenziali
-
-## Comando
-
-- `/meteo <città>`
-
-### Endpoint API:
-
-```
-GET https://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=metric
-```
-
-**Free tier**: 1,000 chiamate/giorno, 60 chiamate/minuto
-
----
-
-## Setup OpenWeatherMap
-
-Per usare l'API:
-
-1. **Crea l'account**: https://home.openweathermap.org/users/sign_up
-2. **Recupera la API key**: https://home.openweathermap.org/api_keys
-3. **Configura le credenziali in n8n** con la tua API key
-
----
-
-## Nodi n8n da creare
-
-Per gestire `/meteo <città>`:
-
-- **Telegram Trigger**
-  Riceve il messaggio con la città.
-
-- **Function / Switch**
-  Estrae la città dopo `/meteo`.
-
-- **OpenWeatherMap** (nodo nativo)
-  - Operation: Current Weather
-  - Location: `{{$json["city"]}}`
-  - Units: Metric
-  - Credentials: La tua API key
-
-- **Set / Function** (opzionale)
-  Formatta la risposta:
-  - Temperatura: `{{$json["main"]["temp"]}}°C`
-  - Condizioni: `{{$json["weather"][0]["description"]}}`
-  - Umidità: `{{$json["main"]["humidity"]}}%`
-
-- **Telegram Send Message**
-  Invia la risposta formattata all'utente
 
 ---
 
@@ -381,10 +303,6 @@ Passare da bot basato su comandi a un assistente intelligente e autonomo.
   - aggiungere una scadenza
   - segnare un TODO come completato (`is_done = true`)
 
-### **WEATHER_GET**
-
-Usa OpenWeatherMap per recuperare il meteo (collegato allo Step 3).
-
 ---
 
 ## SimpleMemory (Memory Buffer Window)
@@ -400,53 +318,9 @@ Usata per:
 
 # **Step 5 — Moduli opzionali (per i veloci)**
 
-Questi moduli sono pensati per chi completa i primi 4 step velocemente e vuole esplorare ulteriori integrazioni.
+I moduli opzionali sono stati spostati nella doc speedrunner:
 
----
-
-## **1. Ricerca Immagini con Pixabay**
-
-### Setup
-
-- Crea l'account: https://pixabay.com/api/docs/
-- Recupera la API key (in alto nella documentazione)
-
-### Comando
-
-- `/image <query>`
-
-### Endpoint API
-
-```
-GET https://pixabay.com/api?key=API_KEY&q=QUERY&image_type=photo&per_page=3
-```
-
-### Nodi da creare
-
-- **HTTP Request** per chiamare l'API Pixabay
-- **Set/Function** per estrarre URL immagini da `hits[]`
-- **HTTP Request (binary)** per scaricare l'immagine
-- **Telegram Send Photo** per inviare l'immagine direttamente
-
-### Tool per AI Agent
-
-Crea `IMAGE_SEARCH` tool che l'AI può invocare automaticamente quando l'utente chiede immagini.
-
----
-
-## **2. Google Calendar**
-
-- Creazione eventi da richieste in linguaggio naturale
-- Lettura calendario per controllare disponibilità
-- Integrazione con TODO (es. "crea evento per questo TODO")
-
----
-
-## **3. Gmail**
-
-- Comporre email con l'AI
-- Inviare email
-- Lettura inbox (opzionale)
+👉 [docs/speedrunner.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/speedrunner.md)
 
 ---
 
@@ -456,8 +330,7 @@ Alla fine del workshop ogni studente avrà:
 
 - Un proprio Jarvis funzionante
 - Un bot Telegram intelligente
-- Integrazione con Supabase (gestione TODO persistenti)
-- API esterna per informazioni meteo
+- TODO persistenti con Data Tables
 - AI Agent con memoria conversazionale
 - (Opzionale) Ricerca immagini, Google Calendar, Gmail
 
