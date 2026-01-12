@@ -10,11 +10,11 @@ Questa tabella esiste per separare i TODO di ogni persona e tenere traccia di co
 
 Colonne minime:
 
-| colonna  | tipo    | note                                                         |
-| ------- | ------- | ------------------------------------------------------------ |
-| text    | text    | contenuto TODO                                               |
-| user_id | text    | id chat Telegram (serve a non mischiare i TODO tra compagni) |
-| is_done | boolean | default: false                                               |
+| colonna | tipo    | note                                                       |
+| ------- | ------- | ---------------------------------------------------------- |
+| text    | text    | contenuto TODO                                             |
+| user_id | text    | id chat Telegram (serve a non mischiare i TODO tra utenti) |
+| is_done | boolean | default: false                                             |
 
 ---
 
@@ -24,7 +24,11 @@ Nel menu comandi del bot (BotFather → /setcommands) inseriamo:
 
 ```
 add - Aggiunge un nuovo TODO
+list - Mostra la lista dei TODO
+complete - Segna come completato un TODO tramite ID
 ```
+
+(ci servono tutti subito per semplicità)
 
 ---
 
@@ -34,15 +38,29 @@ Qui lavoriamo su uno schema semplice: Trigger → Smistamento → Inserimento �
 
 1. **Telegram Trigger**
    - Riceve il messaggio e il `chat_id`.
-2. **Function / Switch**
-   - Se il testo inizia con `/add`, passa allo step successivo.
-3. **Data Table (Create/Insert)**
+2. **Function** (estrai comando + testo)
+   - Incolliamo questo snippet:
+   ```js
+    const text = ($input.first().json.message.text || '').trim();
+
+    const [command, ...rest] = text.split(/\s+/);
+    const body = rest.join(' ').trim();
+
+    return {
+        command,  // es: "/add"
+        body      // es: "compra pane"
+    };
+   ```
+3. **Switch** 
+   - Se il testo inizia con `/add`, segue la route dedicata 
+   - possiamo rinominare l'output /add per semplicità
+4. **Data Table (Create/Insert)**
    - Tabella: `todos`
    - Mapping:
-     - `user_id = {{ $json["message"]["from"]["id"] }}`
-     - `text = <testo dopo /add>`
+     - `user_id = {{ $('Telegram Trigger').item.json.message.from.username }}`
+     - `text = {{ $json.body }}`
      - `is_done = false`
-4. **Telegram Send Message**
+5. **Telegram Send Message**
    - Risponde con una conferma (“TODO aggiunto”).
 
 ---
