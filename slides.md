@@ -181,7 +181,26 @@ Competenze raggiunte (non da presentare):
 
 ---
 
-# **Step 4 — AI Agent (Jarvis) con SimpleMemory**
+# **Step 4 — Simple Chat with Agent**
+
+## Descrizione
+
+Prima di passare a Jarvis, facciamo un mini‑setup per parlare con un agente AI
+in chat usando **Chat Trigger** e una **memoria semplice**.
+
+## Cosa facciamo
+
+- Creiamo un workflow “chat‑only” con **Chat Trigger**
+- Colleghiamo **AI Agent** e **SimpleMemory**
+- Verifichiamo che il bot ricordi il contesto nella conversazione
+
+## Mini‑guida nel repo
+
+- [docs/step-4-simple-chat-agent.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/step-4-simple-chat-agent.md)
+
+---
+
+# **Step 5 — AI Agent (Jarvis) con SimpleMemory**
 
 ## Descrizione
 
@@ -190,16 +209,11 @@ Jarvis comprende il linguaggio naturale e decide quale tool usare.
 
 Prima di iniziare, creiamo la Gemini API key (la useremo nelle credenziali del nodo): https://aistudio.google.com/api-keys
 
-## Obiettivo dello step
+## Cosa facciamo
 
-Passare da bot basato su comandi a un assistente intelligente e autonomo.
-
-## Competenze raggiunte
-
-- Uso del nodo **AI Agent**
-- Collega strumenti esterni come AI Tools
-- Uso della **Memory Buffer Window**
-- Comprensione dei concetti di tool calling
+- Partiamo da un workflow Telegram e lo trasformiamo in un agente “Jarvis”
+- Colleghiamo i nostri tool TODO per creare/listare/aggiornare
+- Diamo all’agente una memoria breve per riferimenti contestuali
 
 ---
 
@@ -239,7 +253,29 @@ Usata per:
   - “Scade domani alle 17”
   - “Cambia la priorità”
 
+## Nodi principali da usare
+
+- **Telegram Trigger** → riceve il messaggio
+- **AI Agent** → interpreta la richiesta e decide il tool
+- **AI Tool** (uno per ogni azione: add/list/update)
+- **SimpleMemory** → conserva contesto breve della chat
+- **Telegram Send Message** → risponde all’utente
+
+## Mini‑guida nel repo
+
+- [docs/step-5-ai-agent-simplememory.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/step-5-ai-agent-simplememory.md)
+
 ---
+
+# **Ricapitolo step**
+
+- Step 1 — Chat Echo Bot (n8n base)
+- Step 2 — Telegram Echo Bot
+- Step 3A — TODO con Data Tables: crea tabella + /add
+- Step 3B — TODO con Data Tables: /list
+- Step 3C — TODO con Data Tables: /complete
+- Step 4 — Simple Chat with Agent (memoria base)
+- Step 5 — AI Agent (Jarvis) con SimpleMemory
 
 # **Conclusione**
 
