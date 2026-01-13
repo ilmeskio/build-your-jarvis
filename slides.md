@@ -3,6 +3,7 @@ title: Build Your Jarvis
 theme: default
 layout: cover
 transition: null
+favicon: /ironman-favicon.svg
 ---
 
 # Build Your Jarvis

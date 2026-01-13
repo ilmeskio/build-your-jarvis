@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Iron man style helmet">
+  <defs>
+    <linearGradient id="helmetRed" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#b31111"/>
+      <stop offset="1" stop-color="#7f0a0a"/>
+    </linearGradient>
+    <linearGradient id="helmetGold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f6d36a"/>
+      <stop offset="1" stop-color="#caa03b"/>
+    </linearGradient>
+  </defs>
+  <circle cx="32" cy="32" r="30" fill="url(#helmetRed)"/>
+  <path d="M20 18h24l4 10-2 22-8 8H26l-8-8-2-22z" fill="url(#helmetGold)"/>
+  <path d="M24 24h16l2 6-2 10-8 4-8-4-2-10z" fill="#d9b257"/>
+  <path d="M18 30h28l-2 10-6 6H26l-6-6z" fill="#b88a2a"/>
+  <rect x="18" y="30" width="12" height="4" rx="2" fill="#79d6ff"/>
+  <rect x="34" y="30" width="12" height="4" rx="2" fill="#79d6ff"/>
+  <rect x="30" y="36" width="4" height="6" rx="2" fill="#7a4a1a"/>
+  <path d="M22 22h20l2 6H20z" fill="#991010"/>
+</svg>
