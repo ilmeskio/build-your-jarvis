@@ -9,15 +9,15 @@ transition: null
 
 ## n8n · Telegram · Gemini
 
-### Workshop
+### Un workshop per smanettare con gli Agenti
 
 ---
 
 ## Abstract del Workshop
 
-In questo workshop di 3 ore gli studenti costruiranno il proprio **Jarvis personale**, un assistente digitale basato su **n8n**, **Telegram** e **Gemini**.
+In questo workshop di 3 ore costruiremo un nostro **Jarvis personale**, un assistente digitale basato su **n8n**, **Telegram** e **Gemini**.
 
-Attraverso una serie di attività progressive, impareremo a creare automazioni, gestire dati strutturati con le **Data Tables** di n8n e integrare un AI Agent capace di comprendere il linguaggio naturale.
+Impareremo a creare automazioni, gestire dati strutturati e integrare un AI Agent capace di comprendere il linguaggio naturale.
 
 Il risultato finale sarà un assistente capace di gestire TODO e rispondere in modo intelligente che potremo mano a mano rendere più complesso a seconda delle nostre necessità.
 
@@ -234,7 +234,7 @@ class: slide-compact
 - Input: `user_id`, 
 - Esempi: “Cosa devo fare?”
 
-### **TODO_UPDATE**
+### **TODO_COMPLETE**
 
 - Segna completato (`is_done = true`)
 
@@ -265,15 +265,31 @@ Costruisco esperienze digitali per creare qualcosa di utile e bello per le perso
 
 # **Conclusione**
 
-Alla fine del workshop ogni studente avrà:
+Alla fine del workshop avete:
 
 - Un proprio Jarvis funzionante
 - Un bot Telegram intelligente
 - TODO persistenti con Data Tables
 - AI Agent con memoria conversazionale
-- (Opzionale) Ricerca immagini, Google Calendar, Gmail
 
-Il workshop fornisce basi solide per future estensioni: GitHub, Notion, altre API, dashboard, automazioni avanzate e molto altro.
+Ora i limiti sono la vostra fantasia e delle api di AI gratuite. (o installare un AI open-source)
+
+---
+
+# Abbiamo ancora tempo?
+
+Prova queste altre sfide in Speedrunner.
+Possiamo integrarle sia come comandi Telegram sia direttamente con l’AI Agent:
+
+- TODO con date di scadenza e priorità (Data Tables)
+- Esperimenti con comandi Telegram
+- Meteo via OpenWeatherMap con API esterna
+- Ricerca immagini con Pixabay
+- TODO persistenti su Supabase (alternativa alle Data Tables)
+- Google Calendar
+- Gmail
+
+Dettagli e guida: [docs/speedrunner.md](docs/speedrunner.md)
 
 <style>
 :global(.slidev-layout.slide-compact) {
