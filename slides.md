@@ -263,7 +263,7 @@ Usata per:
 
 ## Mini‑guida nel repo
 
-- [docs/step-5-ai-agent-simplememory.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/step-5-ai-agent-simplememory.md)
+- [docs/step-5-jarvis.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/step-5-jarvis.md)
 
 ---
 
