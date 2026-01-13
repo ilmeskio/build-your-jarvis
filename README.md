@@ -1,6 +1,7 @@
 # README — Build Your Jarvis con n8n in Docker Compose
 
 Repository: https://github.com/ilmeskio/build-your-jarvis
+Slide: https://ilmeskio.github.io/build-your-jarvis/
 
 ## 🌐 URL pubblico HTTPS con Cloudflare Tunnel
 
@@ -13,13 +14,10 @@ Usa lo script di automazione che gestisce l'intero processo:
 
 ```bash
 # Una volta, dalla root del repository:
-chmod +x scripts/start-tunnel.sh scripts/stop-tunnel.sh
+chmod +x scripts/start scripts/stop
 
 # Avvia tunnel + aggiorna .env + ricrea container
-./scripts/start-tunnel.sh
-
-# Oppure tramite npm:
-pnpm tunnel:start
+./scripts/start
 ```
 
 Lo script:
@@ -33,16 +31,13 @@ Lo script:
 Quando hai finito:
 ```bash
 # Ferma il tunnel
-./scripts/stop-tunnel.sh
-
-# Oppure tramite npm:
-pnpm tunnel:stop
+./scripts/stop
 ```
 
 Comandi utili:
 ```bash
 # Visualizza i log del tunnel
-pnpm tunnel:logs
+tail -f .tunnel/cloudflared.log
 
 # Visualizza i log di n8n
 docker compose logs -f n8n
@@ -75,7 +70,10 @@ Config:
 - `.env.example` (template incluso nel repo)
 - `.env` (creato automaticamente da `.env.example`)
   - `N8N_IMAGE` è impostata di default a `docker.n8n.io/n8nio/n8n:2.0.2`.
+  - `N8N_PORT` definisce la porta locale (default `5678`).
+  - `N8N_TIMEZONE` imposta il fuso orario per i workflow schedulati (default `UTC`).
   - Per far generare URL corretti: imposta `N8N_PUBLIC_URL=https://<hostname>` (senza slash finale) e ricrea il container.
+  - In `compose.yml`, `N8N_EDITOR_BASE_URL` e `WEBHOOK_URL` vengono derivati da `N8N_PUBLIC_URL`, così editor e webhook usano lo stesso hostname.
 - Nota: se vuoi usare i Task Runners in modalità "external", da n8n 2.0 non sono più inclusi nell'immagine `n8nio/n8n` e serve un container separato `n8nio/runners`.
 
 ### 📝 Configurazione .env
@@ -85,7 +83,7 @@ Il repository include `.env.example` con i valori predefiniti del workshop.
 **Prima volta:**
 ```bash
 # .env viene creato automaticamente quando esegui:
-./scripts/start-tunnel.sh
+./scripts/start
 
 # Oppure crealo manualmente:
 cp .env.example .env
@@ -129,4 +127,21 @@ cp .env.example .env
 
 ### 📚 Guide estese (repo)
 
-- Step 1 (Telegram Echo Bot): [docs/step-1-telegram-echo-bot.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/step-1-telegram-echo-bot.md)
+- Recap globale dei punti:
+  - Step 1: Chat Echo Bot (workflow base in chat n8n, trigger + risposta).
+  - Step 2: Telegram Echo Bot (token BotFather, trigger Telegram, risposta in chat).
+  - Step 3A: TODO Add (Data Table `todos`, comando `/add`).
+  - Step 3B: TODO List (lettura Data Table, comando `/list`).
+  - Step 3C: TODO Complete (update `is_done`, comando `/complete`).
+  - Step 4: Simple Chat Agent (AI Agent + SimpleMemory + tool base).
+  - Step 5: Jarvis (integrazione agent + tool TODO su Telegram).
+  - Speedrunner: Extra (Supabase, meteo, integrazioni opzionali).
+
+- Step 1 (Chat Echo Bot): [docs/step-1-chat-echo-bot.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/step-1-chat-echo-bot.md)
+- Step 2 (Telegram Echo Bot): [docs/step-2-telegram-echo-bot.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/step-2-telegram-echo-bot.md)
+- Step 3A (TODO Add): [docs/step-3a-todo-add.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/step-3a-todo-add.md)
+- Step 3B (TODO List): [docs/step-3b-todo-list.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/step-3b-todo-list.md)
+- Step 3C (TODO Complete): [docs/step-3c-todo-complete.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/step-3c-todo-complete.md)
+- Step 4 (Simple Chat Agent): [docs/step-4-simple-chat-agent.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/step-4-simple-chat-agent.md)
+- Step 5 (Jarvis): [docs/step-5-jarvis.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/step-5-jarvis.md)
+- Speedrunner (Extra): [docs/speedrunner.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/speedrunner.md)

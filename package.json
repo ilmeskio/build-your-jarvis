@@ -1,27 +1,27 @@
 {
-  "name": "build-your-jarvis",
-  "private": true,
-  "packageManager": "pnpm@10.16.1",
-  "scripts": {
-    "tunnel:start": "bash scripts/start-tunnel.sh",
-    "tunnel:stop": "bash scripts/stop-tunnel.sh",
-    "tunnel:logs": "tail -f .tunnel/cloudflared.log",
-    "format:slides": "prettier --write slides.md",
-    "slides:dev": "slidev slides.md",
-    "slides:build": "slidev build slides.md --out dist"
-  },
-  "devDependencies": {
-    "@slidev/cli": "^0.50.0",
-    "prettier": "^3.7.4",
-    "prettier-plugin-slidev": "^1.0.5"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "esbuild",
-      "vue-demi"
-    ]
-  },
-  "dependencies": {
-    "@slidev/theme-default": "^0.25.0"
-  }
+    "name": "build-your-jarvis",
+    "private": true,
+    "packageManager": "pnpm@10.16.1",
+    "scripts": {
+        "tunnel:start": "bash scripts/start",
+        "tunnel:stop": "bash scripts/stop",
+        "tunnel:logs": "tail -f .tunnel/cloudflared.log",
+        "format:slides": "prettier --write slides.md",
+        "slides:dev": "slidev slides.md",
+        "slides:build": "slidev build slides.md --out dist"
+    },
+    "devDependencies": {
+        "@slidev/cli": "^0.50.0",
+        "prettier": "^3.7.4",
+        "prettier-plugin-slidev": "^1.0.5"
+    },
+    "pnpm": {
+        "onlyBuiltDependencies": [
+            "esbuild",
+            "vue-demi"
+        ]
+    },
+    "dependencies": {
+        "@slidev/theme-default": "^0.25.0"
+    }
 }
