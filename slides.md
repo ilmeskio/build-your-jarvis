@@ -277,6 +277,30 @@ Usata per:
 - Step 4 — Simple Chat with Agent (memoria base)
 - Step 5 — AI Agent (Jarvis) con SimpleMemory
 
+---
+
+# Gabriele Consiglio
+
+### Freelance Software Engineer
+
+<div style="position: absolute; bottom: 1.5rem; right: 1.5rem;">
+  <img
+    src="https://github.com/ilmeskio.png?size=240"
+    alt="Gabriele Consiglio"
+    width="200"
+    style="border-radius: 999px;"
+  />
+</div>
+
+Costruisco esperienze digitali per creare qualcosa di utile e bello per le persone. Amo imparare ogni giorno e cerco nuove idee da provare.
+
+- GitHub: [github.com/ilmeskio](https://github.com/ilmeskio)
+- LinkedIn: [linkedin.com/in/gabrieleconsiglio](https://www.linkedin.com/in/gabrieleconsiglio/)
+
+
+
+---
+
 # **Conclusione**
 
 Alla fine del workshop ogni studente avrà:
