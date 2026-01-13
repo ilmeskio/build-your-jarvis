@@ -188,6 +188,9 @@ Competenze raggiunte (non da presentare):
 Prima di passare a Jarvis, facciamo un mini‑setup per parlare con un agente AI
 in chat usando **Chat Trigger** e una **memoria semplice**.
 
+Prima di iniziare, creiamo la Gemini API key (la useremo nelle credenziali del nodo): https://aistudio.google.com/api-keys
+
+
 ## Cosa facciamo
 
 - Creiamo un workflow “chat‑only” con **Chat Trigger**
@@ -207,75 +210,34 @@ in chat usando **Chat Trigger** e una **memoria semplice**.
 Introduce l’AI Agent Gemini di n8n.  
 Jarvis comprende il linguaggio naturale e decide quale tool usare.
 
-Prima di iniziare, creiamo la Gemini API key (la useremo nelle credenziali del nodo): https://aistudio.google.com/api-keys
+- Mini‑guida: [docs/step-5-jarvis.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/step-5-jarvis.md)
 
 ## Cosa facciamo
 
-- Partiamo da un workflow Telegram e lo trasformiamo in un agente “Jarvis”
-- Colleghiamo i nostri tool TODO per creare/listare/aggiornare
+- Partiamo dal workflow Telegram e lo trasformiamo in un agente “Jarvis”
+- Colleghiamo i nodi TODO per creare/listare/aggiornare
 - Diamo all’agente una memoria breve per riferimenti contestuali
 
+---
+class: slide-compact
 ---
 
 ## Tool collegati all’AI Agent
 
 ### **TODO_ADD**
 
-- Input: user_id, text, priority, due_date
-- Azione: inserimento
+- Input: `user_id`, `text`
+- Azione: inserisce un TODO
 
-### **TODO_LIST** (con filtri per data)
+### **TODO_LIST** 
 
-- Input:
-  - user_id
-  - date_from (opzionale)
-  - date_to (opzionale)
-- Supporta richieste come:
-  - “Cosa devo fare oggi?”
-  - “Entro venerdì?”
-  - “Questa settimana?”
+- Input: `user_id`, 
+- Esempi: “Cosa devo fare?”
 
 ### **TODO_UPDATE**
 
-- Permette di:
-  - modificare text / priority
-  - aggiungere una scadenza
-  - segnare un TODO come completato (`is_done = true`)
+- Segna completato (`is_done = true`)
 
----
-
-## SimpleMemory (Memory Buffer Window)
-
-Usata per:
-
-- ricordare l’ultimo TODO creato (`last_todo`)
-- interpretare riferimenti successivi:
-  - “Scade domani alle 17”
-  - “Cambia la priorità”
-
-## Nodi principali da usare
-
-- **Telegram Trigger** → riceve il messaggio
-- **AI Agent** → interpreta la richiesta e decide il tool
-- **AI Tool** (uno per ogni azione: add/list/update)
-- **SimpleMemory** → conserva contesto breve della chat
-- **Telegram Send Message** → risponde all’utente
-
-## Mini‑guida nel repo
-
-- [docs/step-5-jarvis.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/step-5-jarvis.md)
-
----
-
-# **Ricapitolo step**
-
-- Step 1 — Chat Echo Bot (n8n base)
-- Step 2 — Telegram Echo Bot
-- Step 3A — TODO con Data Tables: crea tabella + /add
-- Step 3B — TODO con Data Tables: /list
-- Step 3C — TODO con Data Tables: /complete
-- Step 4 — Simple Chat with Agent (memoria base)
-- Step 5 — AI Agent (Jarvis) con SimpleMemory
 
 ---
 
