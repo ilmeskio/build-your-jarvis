@@ -2,7 +2,8 @@
 set -euo pipefail
 
 # Cloudflare Tunnel Automation for build-your-jarvis workshop
-# This script automates the entire tunnel setup workflow
+# This script automates the entire tunnel setup workflow.
+# We include Codespaces-friendly checks so our container can write to ./data.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
@@ -38,6 +39,61 @@ print_warning() {
   echo -e "${YELLOW}⚠ WARNING:${NC} $1"
 }
 
+# We want a single compose entrypoint so this script works on Docker Compose v2 and v1.
+# The function checks both commands, runs the available one, and fails loudly if none exists.
+docker_compose() {
+  if docker compose version >/dev/null 2>&1; then
+    docker compose "$@"
+    return 0
+  fi
+
+  if command -v docker-compose >/dev/null 2>&1; then
+    docker-compose "$@"
+    return 0
+  fi
+
+  print_error "docker compose is not available in this environment"
+  exit 1
+}
+
+# Phase 0.5: Ensure data directory is writable for the container user
+ensure_data_permissions() {
+  print_phase 0 "Checking data directory permissions..."
+
+  # We create the data directory so n8n can persist config and encryption keys.
+  # This also avoids a common Codespaces failure when the mount path does not exist.
+  mkdir -p data
+
+  if [[ -w data ]]; then
+    print_success "Data directory is writable"
+    return 0
+  fi
+
+  print_warning "Data directory is not writable; attempting to fix permissions"
+
+  # Align ownership to the current user to keep local dev environments workable.
+  # Codespaces uses UID 1000 by default, so this still matches there.
+  local current_uid current_gid
+  current_uid="$(id -u)"
+  current_gid="$(id -g)"
+  # When sudo is available, we use it to avoid permission errors and keep the flow smooth.
+  if command -v sudo >/dev/null 2>&1; then
+    sudo chown -R "${current_uid}:${current_gid}" data
+    sudo chmod -R u+rwX data
+  else
+    chown -R "${current_uid}:${current_gid}" data || true
+    chmod -R u+rwX data || true
+  fi
+
+  if [[ ! -w data ]]; then
+    print_error "Data directory is still not writable"
+    echo "Please run: sudo chown -R $(id -u):$(id -g) data && sudo chmod -R u+rwX data"
+    exit 1
+  fi
+
+  print_success "Data directory permissions updated"
+}
+
 # Phase 0: Ensure .env exists
 ensure_env() {
   if [[ ! -f .env ]]; then
@@ -60,8 +116,16 @@ check_cloudflared() {
   print_phase 1 "Checking cloudflared binary..."
 
   if [[ -x "bin/cloudflared" ]]; then
-    VERSION=$(./bin/cloudflared --version 2>&1 | head -1 || echo "unknown")
+    CLOUDFLARED_BIN="./bin/cloudflared"
+    VERSION=$("${CLOUDFLARED_BIN}" --version 2>&1 | head -1 || echo "unknown")
     print_success "cloudflared found at bin/cloudflared ($VERSION)"
+    return 0
+  fi
+
+  if command -v cloudflared >/dev/null 2>&1; then
+    CLOUDFLARED_BIN="$(command -v cloudflared)"
+    VERSION=$("${CLOUDFLARED_BIN}" --version 2>&1 | head -1 || echo "unknown")
+    print_success "cloudflared found in PATH ($VERSION)"
     return 0
   fi
 
@@ -127,7 +191,8 @@ check_cloudflared() {
     exit 1
   fi
 
-  VERSION=$(./bin/cloudflared --version 2>&1 | head -1 || echo "unknown")
+  CLOUDFLARED_BIN="./bin/cloudflared"
+  VERSION=$("${CLOUDFLARED_BIN}" --version 2>&1 | head -1 || echo "unknown")
   print_success "cloudflared downloaded successfully ($VERSION)"
 }
 
@@ -153,7 +218,11 @@ start_tunnel() {
   > .tunnel/cloudflared.log
 
   # Start tunnel in background
-  nohup ./bin/cloudflared tunnel --url http://localhost:5678 > .tunnel/cloudflared.log 2>&1 &
+  if command -v setsid >/dev/null 2>&1; then
+    setsid "${CLOUDFLARED_BIN}" tunnel --url http://localhost:5678 > .tunnel/cloudflared.log 2>&1 &
+  else
+    nohup "${CLOUDFLARED_BIN}" tunnel --url http://localhost:5678 > .tunnel/cloudflared.log 2>&1 &
+  fi
   CLOUDFLARED_PID=$!
   echo "${CLOUDFLARED_PID}" > .tunnel/cloudflared.pid
 
@@ -236,8 +305,13 @@ recreate_container() {
 
   # Verify Docker is running
   if ! docker info >/dev/null 2>&1; then
-    print_error "Docker is not running"
-    echo "Please start Docker Desktop and try again"
+    if [[ -n "${CODESPACES:-}" ]]; then
+      print_error "Docker daemon not available in Codespaces"
+      echo "Ensure your devcontainer enables Docker-in-Docker"
+    else
+      print_error "Docker is not running"
+      echo "Please start Docker Desktop and try again"
+    fi
     echo
     echo "Rollback: Restoring .env from backup..."
     mv .env.backup .env
@@ -252,7 +326,7 @@ recreate_container() {
   fi
 
   # Recreate container
-  if ! docker compose up -d --force-recreate; then
+  if ! docker_compose up -d --force-recreate; then
     print_error "Failed to recreate container"
     echo
     echo "Rollback: Restoring .env from backup..."
@@ -274,8 +348,8 @@ recreate_container() {
     ELAPSED=$((ELAPSED + 2))
   done
 
-  print_warning "n8n did not respond within ${TIMEOUT}s"
-  echo "Check logs: docker compose logs -f n8n"
+    print_warning "n8n did not respond within ${TIMEOUT}s"
+    echo "Check logs: docker compose logs -f n8n"
 }
 
 # Phase 6: Verify tunnel accessibility
@@ -301,6 +375,7 @@ main() {
   print_header
 
   ensure_env
+  ensure_data_permissions
 
   check_cloudflared
   echo
