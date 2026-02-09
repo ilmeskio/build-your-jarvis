@@ -1,0 +1,4 @@
+{
+  "name": "build-your-jarvis",
+  "postCreateCommand": "scripts/start"
+}
