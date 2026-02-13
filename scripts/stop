@@ -55,4 +55,4 @@ rm -f .tunnel/cloudflared.pid
 
 echo -e "${GREEN}✓${NC} Tunnel stopped"
 echo
-echo "To restart the tunnel, run: ./scripts/start-tunnel.sh"
+echo "To restart the tunnel, run: ./scripts/start"

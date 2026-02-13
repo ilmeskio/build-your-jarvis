@@ -1,7 +1,7 @@
 # Step 1 — Chat Echo Bot (guida estesa)
 
 Questa guida ci serve per costruire il nostro primo workflow end‑to‑end con n8n, senza dipendenze esterne.
-L’idea è semplice, ma è una pietra miliare: se riusciamo a ricevere un messaggio e rispondere correttamente, allora abbiamo imparato il pattern “Trigger → Azione” che useremo per TODO e AI.
+L’idea è semplice, ma è una pietra miliare: se riusciamo a ricevere un messaggio e rispondere correttamente, allora abbiamo imparato il pattern “Trigger → Azione” che useremo per agent e tool.
 
 ## Obiettivo
 
