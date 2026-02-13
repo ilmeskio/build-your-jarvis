@@ -1,4 +1,4 @@
-# README — Build Your Jarvis con n8n in Docker Compose
+# README — Build Your ~~Jarvis~~ Pokedex con n8n in Docker Compose
 
 Repository: https://github.com/ilmeskio/build-your-jarvis
 Slide: https://ilmeskio.github.io/build-your-jarvis/
@@ -72,7 +72,7 @@ tail -f .tunnel/cloudflared.log
 - Step 3B: Pokedex List/Remove (tool `POKEDEX_LIST`, `POKEDEX_REMOVE`)
 - Step 3C: Pokemon Lookup API (tool `POKEMON_LOOKUP` via PokeAPI)
 - Step 4: Pokedex Agent completo (tool orchestration)
-- Step 5: Jarvis Pokemon robusto (error handling e quality)
+- Step 5: Pokedex Agent robusto (error handling e quality)
 - Speedrunner: estensioni extra
 
 Guide repo:

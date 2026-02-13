@@ -1,12 +1,12 @@
 ---
-title: Build Your Jarvis
+title: Build Your ~~Jarvis~~ Pokedex
 theme: default
 layout: cover
 transition: null
-favicon: /ironman-favicon.svg
+favicon: /pokedex-favicon.svg
 ---
 
-# Build Your Jarvis
+# Build Your ~~Jarvis~~ Pokedex
 
 ## n8n · AI Agent · Pokedex
 
@@ -22,7 +22,7 @@ In questo workshop costruiamo un agente AI in n8n, partendo da zero:
 - tool personalizzati su Simple Tables
 - integrazione con API pubblica Pokemon
 
-Risultato: un Jarvis verticale sul dominio Pokemon.
+Risultato: un Pokedex Agent verticale sul dominio Pokemon.
 
 ---
 
@@ -136,7 +136,7 @@ Guida: [docs/step-4-pokedex-agent.md](https://github.com/ilmeskio/build-your-jar
 
 ---
 
-# Step 5 — Jarvis Pokemon robusto
+# Step 5 — Pokedex Agent robusto
 
 Focus:
 - prompt quality

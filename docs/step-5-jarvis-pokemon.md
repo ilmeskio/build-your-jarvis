@@ -1,4 +1,4 @@
-# Step 5 — Jarvis Pokemon: qualità e robustezza
+# Step 5 — Pokedex Agent: qualità e robustezza
 
 Step finale: rendiamo il nostro agente più affidabile e "da demo".
 
@@ -47,4 +47,4 @@ Nel ramo `POKEDEX_REMOVE`, se non ci sono righe eliminate:
 
 ## 4) Risultato
 
-A questo punto hai un "Jarvis" verticale sul dominio Pokemon, pronto per essere esteso con nuovi tool.
+A questo punto hai un Pokedex Agent verticale sul dominio Pokemon, pronto per essere esteso con nuovi tool.
