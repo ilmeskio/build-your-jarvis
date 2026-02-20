@@ -112,22 +112,6 @@ Guida: [docs/step-3b-pokedex-list-remove.md](https://github.com/ilmeskio/build-y
 
 ---
 
-# Step 3C — Tool Pokemon Lookup (API)
-
-Tool `POKEMON_LOOKUP` via API pubblica gratuita:
-
-```text
-https://pokeapi.co/api/v2/pokemon/{name}
-```
-
-Esempio:
-- `Cerca charizard`
-- `Aggiungilo al pokedex`
-
-Guida: [docs/step-3c-pokemon-lookup-api.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/step-3c-pokemon-lookup-api.md)
-
----
-
 # Step 4 — Pokedex Agent completo
 
 Colleghiamo memoria + tutti i tool nello stesso agent.

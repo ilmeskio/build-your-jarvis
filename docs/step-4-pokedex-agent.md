@@ -3,7 +3,7 @@
 Ora colleghiamo in un solo workflow tutto quello fatto finora:
 - chat nativa
 - memoria
-- tool Pokedex (`ADD`, `LIST`, `REMOVE`, `LOOKUP`)
+- tool Pokedex (`ADD`, `LIST`, `REMOVE`)
 
 ---
 
@@ -12,7 +12,6 @@ Ora colleghiamo in un solo workflow tutto quello fatto finora:
 Avere un agente che capisca richieste naturali come:
 - `Aggiungi bulbasaur al pokedex`
 - `Rimuovi pikachu`
-- `Cerca informazioni su eevee`
 - `Mostrami il pokedex`
 
 ---
@@ -24,7 +23,7 @@ Schema:
 ```text
 Chat Trigger -> AI Agent -> Respond to Chat
                  | Memory: Simple Memory
-                 | Tools: POKEDEX_ADD, POKEDEX_LIST, POKEDEX_REMOVE, POKEMON_LOOKUP
+                 | Tools: POKEDEX_ADD, POKEDEX_LIST, POKEDEX_REMOVE
 ```
 
 ---
@@ -34,7 +33,6 @@ Chat Trigger -> AI Agent -> Respond to Chat
 ```text
 Sei un assistente Pokemon.
 Usa i tool disponibili invece di inventare dati.
-Se un Pokemon non esiste o l'API risponde errore, avvisa chiaramente l'utente.
 Quando l'utente chiede di aggiungere/rimuovere/listare Pokemon, usa i tool del Pokedex.
 ```
 
@@ -56,10 +54,9 @@ Così le chat restano separate per sessione.
 
 Esegui questa sequenza:
 
-1. `Cerca squirtle`
-2. `Aggiungilo al pokedex`
-3. `Fammi vedere il pokedex`
-4. `Rimuovi squirtle`
-5. `Mostrami di nuovo il pokedex`
+1. `Aggiungi squirtle al pokedex`
+2. `Fammi vedere il pokedex`
+3. `Rimuovi squirtle`
+4. `Mostrami di nuovo il pokedex`
 
-Se il flusso è corretto vedrai lookup, insert, list e delete funzionare senza passare da comandi slash.
+Se il flusso e' corretto vedrai insert, list e delete funzionare senza passare da comandi slash.

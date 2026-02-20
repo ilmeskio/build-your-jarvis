@@ -70,7 +70,6 @@ tail -f .tunnel/cloudflared.log
 - Step 2: Simple Chat Agent (chat nativa, memoria base)
 - Step 3A: Pokedex Add (Simple Table + tool `POKEDEX_ADD`)
 - Step 3B: Pokedex List/Remove (tool `POKEDEX_LIST`, `POKEDEX_REMOVE`)
-- Step 3C: Pokemon Lookup API (tool `POKEMON_LOOKUP` via PokeAPI)
 - Step 4: Pokedex Agent completo (tool orchestration)
 - Step 5: Pokedex Agent robusto (error handling e quality)
 - Speedrunner: estensioni extra
@@ -80,7 +79,6 @@ Guide repo:
 - Step 2: [docs/step-2-simple-chat-agent.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/step-2-simple-chat-agent.md)
 - Step 3A: [docs/step-3a-pokedex-add.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/step-3a-pokedex-add.md)
 - Step 3B: [docs/step-3b-pokedex-list-remove.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/step-3b-pokedex-list-remove.md)
-- Step 3C: [docs/step-3c-pokemon-lookup-api.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/step-3c-pokemon-lookup-api.md)
 - Step 4: [docs/step-4-pokedex-agent.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/step-4-pokedex-agent.md)
 - Step 5: [docs/step-5-jarvis-pokemon.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/step-5-jarvis-pokemon.md)
 - Speedrunner: [docs/speedrunner.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/speedrunner.md)

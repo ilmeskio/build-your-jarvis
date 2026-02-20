@@ -18,10 +18,8 @@ Colonne consigliate:
 | colonna      | tipo | note |
 | ------------ | ---- | ---- |
 | pokemon_name | text | nome normalizzato (es: pikachu) |
-| pokemon_id   | number | id Pokedex (opzionale ma utile) |
 | type_1       | text | tipo principale |
 | type_2       | text | tipo secondario opzionale |
-| created_at   | date/time | data inserimento |
 
 ---
 
@@ -37,7 +35,6 @@ Colonne consigliate:
   "type": "object",
   "properties": {
     "pokemon_name": { "type": "string" },
-    "pokemon_id": { "type": "number" },
     "type_1": { "type": "string" },
     "type_2": { "type": "string" }
   },
@@ -48,10 +45,8 @@ Colonne consigliate:
 5. Collega il tool a un nodo `Simple Table` in modalità **Create Row**.
 6. Mapping minimo:
    - `pokemon_name = {{ ($json.pokemon_name || '').toLowerCase().trim() }}`
-   - `pokemon_id = {{ $json.pokemon_id }}`
    - `type_1 = {{ $json.type_1 }}`
    - `type_2 = {{ $json.type_2 }}`
-   - `created_at = {{ $now }}`
 
 ---
 
