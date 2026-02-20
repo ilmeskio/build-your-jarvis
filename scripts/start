@@ -405,11 +405,11 @@ main() {
   echo
   echo "Next steps:"
   echo "1. Open n8n in your browser: ${TUNNEL_URL}"
-  echo "2. Create your Telegram bot with BotFather"
-  echo "3. Configure webhook in n8n using this public URL"
+  echo "2. Complete n8n onboarding if needed"
+  echo "3. Start from Step 1 (Chat Echo Bot) in docs/"
   echo
   echo "Useful commands:"
-  echo "  Stop tunnel: ./scripts/stop-tunnel.sh"
+  echo "  Stop tunnel: ./scripts/stop"
   echo "  View logs: tail -f .tunnel/cloudflared.log"
   echo "  n8n logs: docker compose logs -f n8n"
 }

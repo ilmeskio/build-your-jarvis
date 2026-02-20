@@ -1,244 +1,162 @@
 ---
-title: Build Your Jarvis
+title: Build Your ~~Jarvis~~ Pokedex
 theme: default
 layout: cover
 transition: null
-favicon: /ironman-favicon.svg
+favicon: /pokedex-favicon.svg
 ---
 
-# Build Your Jarvis
+# Build Your ~~Jarvis~~ Pokedex
 
-## n8n · Telegram · Gemini
+## n8n · AI Agent · Pokedex
 
-### Un workshop per smanettare con gli Agenti
-
----
-
-## Abstract del Workshop
-
-In questo workshop di 3 ore costruiremo un nostro **Jarvis personale**, un assistente digitale basato su **n8n**, **Telegram** e **Gemini**.
-
-Impareremo a creare automazioni, gestire dati strutturati e integrare un AI Agent capace di comprendere il linguaggio naturale.
-
-Il risultato finale sarà un assistente capace di gestire TODO e rispondere in modo intelligente che potremo mano a mano rendere più complesso a seconda delle nostre necessità.
+### Workshop hands-on
 
 ---
 
-## **Patto d'Aula**
+## Abstract
 
-- L’obiettivo principale è **imparare facendo**.
-- Non serve conoscere tutto subito: si procede **per passi**, ogni step aggiunge un pezzo.
-- Gli errori sono parte del processo: si risolvono insieme.
-- Ritmi diversi, stesso obiettivo: chi è avanti può continuare con la speedrunner ([docs/speedrunner.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/speedrunner.md)).
-- Collaborazione: aiutare un compagno significa imparare due volte.
-- Rispetto delle risorse comuni: API key personali, nessun uso improprio.
+In questo workshop costruiamo un agente AI in n8n, partendo da zero:
+- chat nativa di n8n
+- memoria conversazionale
+- tool personalizzati su Simple Tables
+- integrazione con API pubblica Pokemon
 
----
-
-## **Requisiti per l’Accesso al Workshop**
-
-### **1. Software necessario**
-
-- Docker Desktop (o Docker Engine)
-- n8n tramite Docker Compose (file fornito)
-- Editor di testo semplice (VSCode o altro, opzionale)
-
----
-class: slide-compact
----
-
-### **2. Setup dell'ambiente locale**
-
-1. [**Forka e clona il repository**](https://github.com/ilmeskio/build-your-jarvis/fork)
-
-2. **Verifica che Docker sia attivo**
-
-3. **Avvia tutto con lo script unico**
-   - Dalla root del progetto esegui:
-   ```bash
-   ./scripts/start
-   ```
-   - Lo script gestisce n8n, tunnel e variabili `.env`
-
-4. **Apri n8n dal link dello script**
-   - Dopo l’avvio vedrai una riga tipo: `SUCCESS! Tunnel is accessible at: https://...trycloudflare.com`
-   - Usa quell’URL e completa l'onboarding (creazione utente admin).
-   - Attiva la licenza gratuita.
-
-5. **Ferma o resetta l'ambiente quando serve**
-   ```bash
-   ./scripts/stop
-   ```
+Risultato: un Pokedex Agent verticale sul dominio Pokemon.
 
 ---
 
-# **Step 1 — Chat Echo Bot: primi passi in n8n**
+## Setup ambiente
 
-Creiamo un mini bot di chat direttamente in n8n per capire il flusso base senza dipendenze esterne.
+1. Fork + clone del repository
+2. Avvio:
 
-> Il nostro obiettivo: scrivere un messaggio nella chat di n8n e ricevere la stessa risposta.
->
-> Un eco.
+```bash
+./scripts/start
+```
 
----
-
-## Principi base di n8n
-
-- Un **workflow** è una sequenza di nodi collegati.
-- Ogni workflow parte da un **trigger** (evento che scatena un innesco del workflow) e finisce con una o più **azioni**.
-- I dati viaggiano tra i nodi in formato **JSON**: ogni nodo può leggere e trasformare questi dati.
-- Ogni volta che arriva un evento del **trigger**, n8n esegue il workflow e crea una nuova **execution**.
+3. Apri n8n all'URL stampata dallo script
 
 ---
 
-## Cosa facciamo (in breve)
+## Codespaces + Cloudflare Tunnel
 
-1. Creiamo un workflow con `Chat Trigger`
-2. Aggiungiamo `Chat Respond` per rispondere con lo stesso testo
-3. Testiamo e poi **Activate** per renderlo sempre attivo
+Nel repository il dev container esegue automaticamente:
+- `postCreateCommand: scripts/start`
+- `postStartCommand: scripts/start`
 
-## Guida estesa nel repo
+Per trovare il link pubblico:
+- apri i log lifecycle del dev container
+- cerca `SUCCESS! Tunnel is accessible at:`
+- copia `https://...trycloudflare.com`
 
-Per i passaggi dettagliati (nodi, mapping, troubleshooting) usiamo:
+Fallback da terminale:
 
-- [docs/step-1-chat-echo-bot.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/step-1-chat-echo-bot.md)
-
----
-
-# **Step 2 — Telegram Echo Bot**
-
-Portiamo lo stesso flusso dell’eco fuori da n8n, collegandolo a Telegram.
-
-## Cosa facciamo (in breve)
-
-1. Creiamo un bot con BotFather e copiamo il **Bot Token**
-2. Riutilizziamo la stessa logica dello Step 1 ma con i nodi Telegram:
-   - `Telegram Trigger` (evento **On Message**) per ricevere i messaggi
-   - `Telegram Send Message` per rispondere nella stessa chat
-3. Verifichiamo il webhook (tunnel attivo) e poi **Activate** per renderlo sempre attivo
-
-## Mini‑guida nel repo
-
-- [docs/step-2-telegram-echo-bot.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/step-2-telegram-echo-bot.md)
+```bash
+tail -f .tunnel/cloudflared.log
+```
 
 ---
 
-# **Step 3 — TODO con Data Tables (panoramica)**
+# Step 1 — Chat Echo Bot
 
-In questo blocco trasformiamo il bot in qualcosa di utile: una lista TODO persistente.
-Useremo i comandi di Telegram per aggiungere, vedere e completare i TODO.
+Workflow minimo:
 
----
+```text
+Chat Trigger -> Respond to Chat
+```
 
-# **Step 3A — TODO con Data Tables: crea tabella + /add**
+Obiettivo: capire il pattern trigger/risposta direttamente nella chat nativa di n8n.
 
-Mettiamo i TODO dentro le **Data Tables** di n8n e iniziamo ad aggiungerli.
-
-## Cosa facciamo
-
-- Creiamo la tabella `todos`
-- Aggiungiamo un TODO con `/add <testo>`
-
-## Mini‑guida nel repo
-
-- [docs/step-3a-todo-add.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/step-3a-todo-add.md)
+Guida: [docs/step-1-chat-echo-bot.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/step-1-chat-echo-bot.md)
 
 ---
 
-# **Step 3B — TODO con Data Tables: /list**
+# Step 2 — Simple Chat Agent
 
-Ora mostriamo la lista dei TODO.
+Workflow:
 
-## Cosa facciamo
+```text
+Chat Trigger -> AI Agent -> Respond to Chat
+                \-> Simple Memory
+```
 
-- Recuperiamo i TODO della nostra chat
-- Rispondiamo con una lista leggibile
+Obiettivo: conversazione con memoria, in chat nativa n8n.
 
-## Mini‑guida nel repo
-
-- [docs/step-3b-todo-list.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/step-3b-todo-list.md)
-
----
-
-# **Step 3C — TODO con Data Tables: /complete**
-
-Chiudiamo il ciclo segnando un TODO come completato.
-
-## Cosa facciamo
-
-- Aggiorniamo `is_done = true` con `/complete <id>`
-- Verifichiamo che sparisca dalla lista
-
-<!--
-Competenze raggiunte (non da presentare):
-- Creazione Data Table `todos`
-- Operazioni CRUD con Data Tables
-- Routing tramite comandi Telegram
--->
-
-## Mini‑guida nel repo
-
-- [docs/step-3c-todo-complete.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/step-3c-todo-complete.md)
+Guida: [docs/step-2-simple-chat-agent.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/step-2-simple-chat-agent.md)
 
 ---
 
-# **Step 4 — Simple Chat with Agent**
+# Step 3A — Tool Pokedex Add
 
-## Descrizione
+Creiamo la Simple Table `pokedex` e il tool `POKEDEX_ADD`.
 
-Prima di passare a Jarvis, facciamo un mini‑setup per parlare con un agente AI
-in chat usando **Chat Trigger** e una **memoria semplice**.
+Esempio richiesta:
+- `Aggiungi pikachu al mio pokedex`
 
-Prima di iniziare, creiamo la Gemini API key (la useremo nelle credenziali del nodo): https://aistudio.google.com/api-keys
-
-
-## Cosa facciamo
-
-- Creiamo un workflow “chat‑only” con **Chat Trigger**
-- Colleghiamo **AI Agent** e **SimpleMemory**
-- Verifichiamo che il bot ricordi il contesto nella conversazione
-
-## Mini‑guida nel repo
-
-- [docs/step-4-simple-chat-agent.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/step-4-simple-chat-agent.md)
+Guida: [docs/step-3a-pokedex-add.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/step-3a-pokedex-add.md)
 
 ---
 
-# **Step 5 — AI Agent (Jarvis) con SimpleMemory**
+# Step 3B — Tool Pokedex List/Remove
 
-## Descrizione
+Aggiungiamo:
+- `POKEDEX_LIST`
+- `POKEDEX_REMOVE`
 
-Introduce l’AI Agent Gemini di n8n.  
-Jarvis comprende il linguaggio naturale e decide quale tool usare.
+Esempi richieste:
+- `Mostrami il pokedex`
+- `Rimuovi pikachu`
 
-- Mini‑guida: [docs/step-5-jarvis.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/step-5-jarvis.md)
-
-## Cosa facciamo
-
-- Partiamo dal workflow Telegram e lo trasformiamo in un agente “Jarvis”
-- Colleghiamo i nodi TODO per creare/listare/aggiornare
-- Diamo all’agente una memoria breve per riferimenti contestuali
+Guida: [docs/step-3b-pokedex-list-remove.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/step-3b-pokedex-list-remove.md)
 
 ---
-class: slide-compact
+
+# Step 3C — Tool Pokemon Lookup (API)
+
+Tool `POKEMON_LOOKUP` via API pubblica gratuita:
+
+```text
+https://pokeapi.co/api/v2/pokemon/{name}
+```
+
+Esempio:
+- `Cerca charizard`
+- `Aggiungilo al pokedex`
+
+Guida: [docs/step-3c-pokemon-lookup-api.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/step-3c-pokemon-lookup-api.md)
+
 ---
 
-## Tool collegati all’AI Agent
+# Step 4 — Pokedex Agent completo
 
-### **TODO_ADD**
+Colleghiamo memoria + tutti i tool nello stesso agent.
 
-- Input: `user_id`, `text`
-- Azione: inserisce un TODO
+Guida: [docs/step-4-pokedex-agent.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/step-4-pokedex-agent.md)
 
-### **TODO_LIST** 
+---
 
-- Input: `user_id`, 
-- Esempi: “Cosa devo fare?”
+# Step 5 — Pokedex Agent robusto
 
-### **TODO_COMPLETE**
+Focus:
+- prompt quality
+- gestione errori
+- demo flow stabile
 
-- Segna completato (`is_done = true`)
+Guida: [docs/step-5-jarvis-pokemon.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/step-5-jarvis-pokemon.md)
 
+---
+
+## Speedrunner
+
+Per chi finisce prima:
+- evoluzioni e abilita'
+- filtri avanzati nel Pokedex
+- team builder (max 6)
+- sprite immagini
+- persistenza su Supabase
+
+Guida: [docs/speedrunner.md](https://github.com/ilmeskio/build-your-jarvis/blob/main/docs/speedrunner.md)
 
 ---
 
@@ -255,64 +173,4 @@ class: slide-compact
   />
 </div>
 
-Costruisco esperienze digitali per creare qualcosa di utile e bello per le persone. Amo imparare ogni giorno e cerco nuove idee da provare.
-
 - GitHub: [github.com/ilmeskio](https://github.com/ilmeskio)
-- LinkedIn: [linkedin.com/in/gabrieleconsiglio](https://www.linkedin.com/in/gabrieleconsiglio/)
-
-
-
----
-
-# **Conclusione**
-
-Alla fine del workshop avete:
-
-- Un proprio Jarvis funzionante
-- Un bot Telegram intelligente
-- TODO persistenti con Data Tables
-- AI Agent con memoria conversazionale
-
-Ora i limiti sono la vostra fantasia e delle api di AI gratuite. (o installare un AI open-source)
-
----
-
-# Abbiamo ancora tempo?
-
-Prova queste altre sfide in Speedrunner.
-Possiamo integrarle sia come comandi Telegram sia direttamente con l’AI Agent:
-
-- TODO con date di scadenza e priorità (Data Tables)
-- Esperimenti con comandi Telegram
-- Meteo via OpenWeatherMap con API esterna
-- Ricerca immagini con Pixabay
-- TODO persistenti su Supabase (alternativa alle Data Tables)
-- Google Calendar
-- Gmail
-
-Dettagli e guida: [docs/speedrunner.md](docs/speedrunner.md)
-
-<style>
-:global(.slidev-layout.slide-compact) {
-  font-size: 0.82em;
-  line-height: 1.15;
-}
-
-:global(.slidev-layout.slide-compact h3) {
-  font-size: 1.35em;
-  margin: 0 0 0.3em 0;
-}
-
-:global(.slidev-layout.slide-compact p) {
-  margin: 0.25em 0;
-}
-
-:global(.slidev-layout.slide-compact ol),
-:global(.slidev-layout.slide-compact ul) {
-  margin: 0.25em 0;
-}
-
-:global(.slidev-layout.slide-compact li) {
-  margin: 0.15em 0;
-}
-</style>
