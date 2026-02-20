@@ -1,4 +1,4 @@
-# README — Build Your ~~Jarvis~~ Pokedex con n8n in Docker Compose
+# README — Build Your ~~Jarvis~~ Pokedex con n8n in GitHub Codespaces
 
 Repository: https://github.com/ilmeskio/build-your-jarvis
 Slide: https://ilmeskio.github.io/build-your-jarvis/
@@ -7,7 +7,7 @@ Slide: https://ilmeskio.github.io/build-your-jarvis/
 
 L'obiettivo e' far girare n8n sulla porta `5678` e ottenere un URL pubblico HTTPS tramite Cloudflare Tunnel.
 
-### Setup automatico (raccomandato)
+### Setup automatico (raccomandato, anche in Codespaces)
 
 ```bash
 chmod +x scripts/start scripts/stop
@@ -59,7 +59,7 @@ tail -f .tunnel/cloudflared.log
 ## Come iniziare il workshop
 
 1. Fork del repository su GitHub.
-2. Avvio locale o in Codespaces.
+2. Avvio in GitHub Codespaces (path standard del workshop).
 3. Onboarding n8n sulla URL locale o tunnel.
 
 ---

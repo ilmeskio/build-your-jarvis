@@ -13,8 +13,9 @@ In pratica: un “eco”.
 
 ## Prerequisiti
 
-- n8n avviato in locale con `docker compose up -d`
-- n8n raggiungibile su `http://localhost:5678` e onboarding completato
+- repository aperto in GitHub Codespaces (path standard del workshop)
+- n8n gia' avviato dai lifecycle command (`postCreateCommand`/`postStartCommand`)
+- onboarding completato su n8n (URL locale del port forwarding oppure URL pubblico `trycloudflare`)
 
 ---
 
